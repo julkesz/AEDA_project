@@ -177,6 +177,20 @@ bool Passages::changeEmployee(NormalLane &nl, unsigned int id_new_emp)
     } throw EmployeeDoesNotExist(id_new_emp);
 }
 
+Toll* searchToll(string nm){
+    vector< Toll *> :: const_iterator it;
+    for(it=Passages::tolls_entr.begin(); it!=Passages::tolls_entr.end(); it++)
+    {
+        if((*it)->getName() == nm) return (*it);
+    }
+
+    for(it=Passages::tolls_ex.begin(); it!=Passages::tolls_ex.end(); it++)
+    {
+        if((*it)->getName() == nm) return (*it);
+    }
+    throw TollDoesNotExist(nm);
+}
+
 ostream & operator<<(ostream & os, const Passages & p)
 {
     vector<Toll *>::const_iterator it;
@@ -312,27 +326,53 @@ ostream & operator<<(ostream & os, const Traffic & t){
     return os;
 }
 
-Works::Works(): interventions(Intervention("",Toll(),0,0,0,Technician())){}
+//Works::Works(): interventions(Intervention("",Toll(),0,0,0,Technician())){}
 
 BST<Intervention> Works::getInterventions() const{
     return interventions;
 }
 
-/*
-bool Works::startIntervention(string tp, Toll t, unsigned int d, unsigned int m, unsigned int y){
-
-    Intervention intv1(tp, t, d, m, y, TECHNICIAN);
+bool Works::addIntervention(string tp, string toll_name, unsigned int r_d, unsigned int r_m, unsigned int r_y){
+    Toll* toll1 = searchToll(toll_name);
+    Intervention intv1(tp, toll1, r_d, r_m, r_y);
     interventions.insert(intv1);
-}*/
+}
 
-bool Works::finishIntervention(string tp, Toll t, unsigned int d1, unsigned int m1, unsigned int y1, unsigned int d2, unsigned int m2, unsigned int y2){
+
+bool Works::startIntervention(string tp, string toll_name, unsigned int r_d, unsigned int r_m, unsigned int r_y, unsigned int s_d, unsigned int s_m, unsigned int s_y){
+    Toll* toll1 = searchToll(toll_name);
+    Toll t_e = Toll();
+    Toll* toll_empty = &t_e;
+
+    Intervention intv = interventions.find(Intervention(tp, toll1, r_d, r_m, r_y));
+    Intervention intvNotFound("", toll_empty, 0, 0, 0);
+
+    if (intv==intvNotFound) {
+        throw InterventionDoesNotExist(tp, toll1, r_d, r_m, r_y);
+    }
+    else {
+        Technician tech1 = toll1->searchTechnician(intv);
+
+        if(tech1.getName() != "")
+        {
+            interventions.remove(Intervention(tp, toll1, r_d, r_m, r_y));
+            intv.start(tech1, s_d, s_m, s_y);
+            interventions.insert(intv);
+            return true;
+
+        } else return false;
+
+    }
+}
+
+//POPRAWIĆ!! - wyciąganie i wkładanie technicians do kolejki
+bool Works::finishIntervention(string tp, string toll_name, unsigned int d1, unsigned int m1, unsigned int y1, unsigned int d2, unsigned int m2, unsigned int y2){
 
     Intervention intv = interventions.find(Intervention(tp, t, d1, m1, y1, Technician()));
     Intervention intvNotFound("", Toll(), 0, 0, 0, Technician());
 
     if (intv==intvNotFound) {
         throw InterventionDoesNotExist(tp, t, d1, m1, y1);
-        return false;
     }
     else {
         interventions.remove(Intervention(tp, t, d1, m1, y1, Technician()));
@@ -342,6 +382,7 @@ bool Works::finishIntervention(string tp, Toll t, unsigned int d1, unsigned int 
     }
 
 }
+
 
 void Works::print() const {
     BSTItrIn<Intervention> it(interventions);

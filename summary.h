@@ -93,6 +93,7 @@ public:
      * @param p reference to the Passages data type object
      * @return ostream data type of the lanes record (with their occupations)
      */
+    friend Toll* searchToll(string nm);
     friend ostream & operator<<(ostream & os, const Passages & p);
     friend class Traffic;
 };
@@ -151,15 +152,15 @@ public:
 
 
 
-
 class Works
 {
     BST<Intervention> interventions;
 public:
     Works();
     BST<Intervention> getInterventions() const;
-    bool startIntervention(string tp, Toll t, unsigned int d, unsigned int m, unsigned int y);
-    bool finishIntervention(string tp, Toll t, unsigned int d1, unsigned int m1, unsigned int y1, unsigned int d2, unsigned int m2, unsigned int y2);
+    bool addIntervention(string tp, string toll_name, unsigned int r_d, unsigned int r_m, unsigned int r_y);
+    bool startIntervention(string tp, string toll_name, unsigned int r_d, unsigned int r_m, unsigned int r_y, unsigned int s_d, unsigned int s_m, unsigned int s_y);
+    bool finishIntervention(string tp, string toll_name, unsigned int r_d, unsigned int r_m, unsigned int r_y, unsigned int f_d, unsigned int f_m, unsigned int f_y);
     bool removeIntervention();
     //string searchFor(string word) const;
     void print() const;

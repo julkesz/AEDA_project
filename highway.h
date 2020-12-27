@@ -14,6 +14,7 @@
 using namespace std;
 
 class Technician;
+class Intervention;
 class Lane;
 
 typedef priority_queue<Technician> HeapTech;
@@ -132,6 +133,13 @@ public:
     * @return ostream data type of the toll's lanes record
     */
     friend ostream & operator<<(ostream & os, const Toll * t);
+
+    HeapTech getTechnicians() const;
+    unsigned int numberOfTechnicians();
+    unsigned addTechnician(Technician& tech1);
+    Technician searchTechnician(Intervention& invt);
+    unsigned fixDefect();
+
 };
 
 
@@ -303,34 +311,42 @@ public:
 };
 
 
+
 class Technician {
     string name;
     string specialty; //review, electronics or informatics
-    unsigned int performance;
+    float performance;
+    vector <Intervention> interventions;
 public:
     Technician(){};
     Technician(string nm, string spt);
     string getName() const;
     string getSpecialty() const;
-    unsigned int getPerformance() const;
+    float getPerformance() const;
     bool operator<(const Technician& tech1) const;
-
+    void addIntervention(Intervention& intv);
 };
 
 int mkdays(int day, int month, int year);
 
 class Intervention {
-    string type;  // review, electronic or computer
-    Toll toll_assoc; //associated toll
-    unsigned int day;
-    unsigned int month;
-    unsigned int year;
+    string type;  //review, electronics or informatics
+    Toll* toll_assoc; //associated toll
+    unsigned int reg_day; //registration day
+    unsigned int reg_month; //registration month
+    unsigned int reg_year; //registration year
+    unsigned int start_day; //start day
+    unsigned int start_month; //start month
+    unsigned int start_year; //start year
     unsigned int duration; // duration in days
     Technician technician_resp; //responsible technician
-    bool status; // true - in progress, false - completed
+    string status; // "registered" "in progress" "completed"
 public:
-    Intervention(string tp, Toll t, unsigned int d, unsigned int m, unsigned int y, Technician tech);
+    Intervention(string tp, Toll* t, unsigned int d, unsigned int m, unsigned int y);
     ~Intervention(){};
+    unsigned int getDuration() const;
+    string getType() const;
+    void start(Technician tech, unsigned int d, unsigned int m, unsigned int y);
     void finish(unsigned int d, unsigned int m, unsigned int y);
     bool operator < (const Intervention &invt1) const;
     bool operator ==(const Intervention &invt1) const;

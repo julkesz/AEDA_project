@@ -115,6 +115,50 @@ ostream & operator <<(ostream &os, const Toll *t){
 }
 
 
+HeapTech Toll::getTechnicians() const{
+    return technicians;
+}
+
+unsigned int Toll:: numberOfTechnicians(){
+    return technicians.size();
+}
+
+unsigned Toll::addTechnician(Technician& tech1){
+    technicians.push(tech1);
+    return technicians.size();
+}
+
+Technician Toll::searchTechnician(Intervention& intv){
+    vector<Technician> temp;
+
+    while (!technicians.empty())
+    {
+        Technician tech = technicians.top();
+        technicians.pop();
+        if (tech.getSpecialty() == intv.getType()) {
+
+            for (unsigned i=0; i<temp.size(); i++)
+                technicians.push(temp[i]);
+            return tech;
+        }
+        else temp.push_back(tech);
+    }
+    for (unsigned i=0; i<temp.size(); i++)
+        technicians.push(temp[i]);
+
+    return Technician();
+
+}
+/*
+unsigned Toll::fixDefect(){
+
+}*/
+
+
+
+
+
+
 Lane::Lane(float lng):
     length(lng)
 {
@@ -242,6 +286,30 @@ string Technician::getName() const{
     return name;
 }
 
+string Technician::getSpecialty() const{
+    return specialty;
+}
+
+float Technician::getPerformance() const{
+    return performance;
+}
+
+void Technician::addIntervention(Intervention& intv){
+    interventions.push_back(intv);
+    float sum=0.0;
+    vector<Intervention>::const_iterator it=interventions.begin();
+    while(it!=interventions.end())
+    {
+        sum += it->getDuration();
+    }
+    performance= (sum)/interventions.size();
+}
+
+bool Technician::operator<(const Technician& tech1) const{
+    return performance > tech1.performance;
+}
+
+
 
 static int monthtab[12] = { 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334 };
 
@@ -251,31 +319,47 @@ int mkdays(int day, int month, int year)
 }
 
 
-Intervention:: Intervention(string tp, Toll t, unsigned int d, unsigned int m, unsigned int y, Technician tech):
-    type(tp), toll_assoc(t), day(d), month(m), year(y), technician_resp(tech)
-    {duration=0; status=true;}
+Intervention:: Intervention(string tp, Toll* t, unsigned int d, unsigned int m, unsigned int y):
+    type(tp), toll_assoc(t), reg_day(d), reg_month(m), reg_year(y)
+    {duration=0; status="registered";}
 
+
+unsigned int Intervention::getDuration() const{
+    return duration;
+}
+
+string Intervention::getType() const{
+    return type;
+}
+
+void Intervention::start(Technician tech, unsigned int d, unsigned int m, unsigned int y){
+    start_day = d;
+    start_month = m;
+    start_year = y;
+    technician_resp= tech;
+    status="in progress";
+}
 
 void Intervention::finish(unsigned int d, unsigned int m, unsigned int y){
-    duration = mkdays(d, m, y) - mkdays(day, month, year);
-    status = false;
+    duration = mkdays(d, m, y) - mkdays(start_day, start_month, start_year);
+    status = "completed";
 }
 
 bool Intervention:: operator < (const Intervention &invt1) const{
-    if (year < invt1.year) return true;
-    else if (year > invt1.year) return false;
+    if (reg_year < invt1.reg_year) return true;
+    else if (reg_year > invt1.reg_year) return false;
     else
     {
-        if(month < invt1.month) return true;
-        else if (month > invt1.month) return false;
+        if(reg_month < invt1.reg_month) return true;
+        else if (reg_month > invt1.reg_month) return false;
         else
         {
-            if(day < invt1.day) return true;
-            else if (day > invt1.day) return false;
+            if(reg_day < invt1.reg_day) return true;
+            else if (reg_day > invt1.reg_day) return false;
             else
             {
-                if(toll_assoc.getName() < invt1.toll_assoc.getName()) return true;
-                else if (toll_assoc.getName() > invt1.toll_assoc.getName()) return false;
+                if(toll_assoc->getName() < invt1.toll_assoc->getName()) return true;
+                else if (toll_assoc->getName() > invt1.toll_assoc->getName()) return false;
                 else
                 {
                     if(type < invt1.type) return true;
@@ -287,20 +371,20 @@ bool Intervention:: operator < (const Intervention &invt1) const{
 }
 
 bool Intervention:: operator ==(const Intervention &invt1) const{
-    return (type == invt1.type && toll_assoc.getName() == invt1.toll_assoc.getName() && day == invt1.day && month==invt1.month && year== invt1.year);
+    return (type == invt1.type && toll_assoc->getName() == invt1.toll_assoc->getName() && reg_day == invt1.reg_day && reg_month==invt1.reg_month && reg_year== invt1.reg_year);
 }
 
-
+//POPRAWIĆ!!
 string Intervention::write() const
 {
     stringstream ss;
-    if(status== true)
+    if(status== "in progress")
     {
-        ss << toll_assoc.getName() << ", type: " << type << ", start date: "<<day<<"/"<<month<<"/"<<year<<", technician: "<<technician_resp.getName()<<" status: in progress";
+        ss << toll_assoc->getName() << ", type: " << type << ", registration date: "<<reg_day<<"/"<<reg_month<<"/"<<reg_year<<", technician: "<<technician_resp.getName()<<" status: in progress";
     }
     else
     {
-        ss << toll_assoc.getName() << ", type: " << type << ", start date: "<<day<<"/"<<month<<"/"<<year<<", technician: "<<technician_resp.getName()<<", duration: "<< duration<<", status: completed";
+        ss << toll_assoc->getName() << ", type: " << type << ", registration date: "<<reg_day<<"/"<<reg_month<<"/"<<reg_year<<", technician: "<<technician_resp.getName()<<", duration: "<< duration<<", status: completed";
     }
 
     return ss.str();

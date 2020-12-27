@@ -213,5 +213,10 @@ int main() {
     cout<<endl<<endl;
     cout<<wynik1<<endl;
 
+    float wynik2;
+
+    wynik2 = 13/5.0;
+    cout<<wynik2;
+
     return 0;
 }

@@ -73,13 +73,13 @@ public:
 
 class InterventionDoesNotExist{
     string type;  // review, electronic or computer
-    Toll toll_assoc; //associated toll
-    unsigned int day;
-    unsigned int month;
-    unsigned int year;
+    Toll* toll_assoc; //associated toll
+    unsigned int reg_day;
+    unsigned int reg_month;
+    unsigned int reg_year;
 public:
-    InterventionDoesNotExist(string tp, Toll t, unsigned int d, unsigned int m,unsigned int y):
-    type(tp), toll_assoc(t), day(d), month(m), year(y){}
+    InterventionDoesNotExist(string tp, Toll* t, unsigned int d, unsigned int m,unsigned int y):
+    type(tp), toll_assoc(t), reg_day(d), reg_month(m), reg_year(y){}
 
 };
 #endif //AEDA_PROJECT_EXCEPTIONS_H
