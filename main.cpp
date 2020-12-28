@@ -254,8 +254,7 @@ int main() {
     cout<<tech2.getPerformance()<<endl;
 
 
-
-
+    /* Julka jest super!! */
 
 
 
