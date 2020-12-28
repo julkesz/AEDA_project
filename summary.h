@@ -8,6 +8,7 @@
 
 using namespace std;
 
+Toll* searchToll(string nm);
 
 class Staff{
     static inline vector< Employee *> employees;
@@ -152,13 +153,12 @@ public:
 
 
 
-class Works
-{
+class Works{
     BST<Intervention> interventions;
 public:
     Works();
     BST<Intervention> getInterventions() const;
-    bool addIntervention(string tp, string toll_name, unsigned int r_d, unsigned int r_m, unsigned int r_y);
+    void addIntervention(string tp, string toll_name, unsigned int r_d, unsigned int r_m, unsigned int r_y);
     bool startIntervention(string tp, string toll_name, unsigned int r_d, unsigned int r_m, unsigned int r_y, unsigned int s_d, unsigned int s_m, unsigned int s_y);
     bool finishIntervention(string tp, string toll_name, unsigned int r_d, unsigned int r_m, unsigned int r_y, unsigned int f_d, unsigned int f_m, unsigned int f_y);
     bool removeIntervention();

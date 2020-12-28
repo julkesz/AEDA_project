@@ -17,7 +17,7 @@ class Technician;
 class Intervention;
 class Lane;
 
-typedef priority_queue<Technician> HeapTech;
+typedef priority_queue<Technician*> HeapTech;
 
 class Employee{
     unsigned int id_number;
@@ -136,9 +136,9 @@ public:
 
     HeapTech getTechnicians() const;
     unsigned int numberOfTechnicians();
-    unsigned addTechnician(Technician& tech1);
-    Technician searchTechnician(Intervention& invt);
-    unsigned fixDefect();
+    unsigned addTechnician(Technician* tech1);
+    Technician* searchTechnician(Intervention& invt);
+    //unsigned fixDefect();
 
 };
 
@@ -315,16 +315,17 @@ public:
 class Technician {
     string name;
     string specialty; //review, electronics or informatics
-    float performance;
     vector <Intervention> interventions;
+    float time_spent;
 public:
     Technician(){};
     Technician(string nm, string spt);
     string getName() const;
     string getSpecialty() const;
     float getPerformance() const;
-    bool operator<(const Technician& tech1) const;
     void addIntervention(Intervention& intv);
+    bool operator<(const Technician& tech1) const;
+
 };
 
 int mkdays(int day, int month, int year);
@@ -339,14 +340,16 @@ class Intervention {
     unsigned int start_month; //start month
     unsigned int start_year; //start year
     unsigned int duration; // duration in days
-    Technician technician_resp; //responsible technician
+    Technician* technician_resp; //responsible technician
     string status; // "registered" "in progress" "completed"
 public:
+    Intervention(){};
     Intervention(string tp, Toll* t, unsigned int d, unsigned int m, unsigned int y);
     ~Intervention(){};
     unsigned int getDuration() const;
     string getType() const;
-    void start(Technician tech, unsigned int d, unsigned int m, unsigned int y);
+    Technician* getTechnician() const;
+    void start(Technician* tech, unsigned int d, unsigned int m, unsigned int y);
     void finish(unsigned int d, unsigned int m, unsigned int y);
     bool operator < (const Intervention &invt1) const;
     bool operator ==(const Intervention &invt1) const;

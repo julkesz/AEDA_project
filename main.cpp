@@ -11,6 +11,7 @@ int main() {
     Traffic t;
 
 
+
     try {
         s.addEmployee(1, "Simon Brown", 1987);
         s.addEmployee(2, "Martin Zelent", 1974);
@@ -206,17 +207,57 @@ int main() {
     }
 
 
-    int wynik1;
+    //SECOND PART
 
-    wynik1= mkdays(21, 12,2020) - mkdays(1,12,2020);
+    Works w;
+
+
+    Technician tech1("Militsa Roswitha", "review");
+    Technician tech2("Astraia Magda", "review");
+    Technician tech3("Lars Bebinn", "electronics");
+    Technician tech4("Vasko Anica", "electronics");
+    Technician tech5("Kama Yisrael", "informatics");
+
+    Technician* pointer_tech1 = &tech1;
+    Technician* pointer_tech2 = &tech2;
+    Technician* pointer_tech3 = &tech3;
+    Technician* pointer_tech4 = &tech4;
+    Technician* pointer_tech5 = &tech5;
+
+    searchToll("tollA_porto")->addTechnician(pointer_tech1);
+    searchToll("tollA_porto")->addTechnician(pointer_tech2);
+    searchToll("tollA_porto")->addTechnician(pointer_tech3);
+    searchToll("tollA_coimbra")->addTechnician(pointer_tech4);
+    searchToll("tollA_coimbra")->addTechnician(pointer_tech5);
+
 
     cout<<endl<<endl;
-    cout<<wynik1<<endl;
+    cout<<searchToll("tollA_porto")->numberOfTechnicians()<<endl;
+    cout<<searchToll("tollA_coimbra")->numberOfTechnicians()<<endl;
 
-    float wynik2;
+    w.addIntervention("review","tollA_porto", 5, 3, 2020);
+    w.addIntervention("review","tollA_porto", 2, 1, 2018);
+    w.addIntervention("informatics","tollA_porto", 5, 3, 2020);
+    w.addIntervention("review","tollA_coimbra", 5, 3, 2019);
 
-    wynik2 = 13/5.0;
-    cout<<wynik2;
+    w.print();
+    cout<<endl<<endl;
+
+    w.startIntervention("review", "tollA_porto", 5, 3, 2020, 7,3,2020);
+    w.startIntervention("review", "tollA_porto", 2, 1, 2018, 7,3,2020);
+    w.finishIntervention("review", "tollA_porto", 5, 3, 2020, 12,3,2020);
+    w.finishIntervention("review", "tollA_porto", 2, 1, 2018, 12,4,2020);
+    w.print();
+
+    cout<<endl<<endl;
+    cout<<tech1.getPerformance()<<endl;
+    cout<<tech2.getPerformance()<<endl;
+
+
+
+
+
+
 
     return 0;
 }
