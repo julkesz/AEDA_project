@@ -244,6 +244,11 @@ float Vehicle::fee()
     }
 }
 
+void Vehicle::addOwner(unsigned int id_own)
+{
+    owner_ass = id_own;
+}
+
 Ride::Ride(Vehicle &vh, Lane *ln, unsigned int lane_p, unsigned d, unsigned m, unsigned y) {
     vehicle_assoc = &vh;
     lane_assoc= ln;
@@ -396,5 +401,57 @@ string Intervention::write() const
         ss << toll_assoc->getName() << ", type: " << type << ", registration date: "<<reg_day<<"/"<<reg_month<<"/"<<reg_year<<", technician: "<<technician_resp->getName()<<", duration: "<< duration<<" days, status: completed";
     }
 
+    return ss.str();
+}
+
+Owner::Owner(unsigned int id, string nm, string s, int y)
+{
+    if(s!="male" && s!="female") throw WrongValue(s);
+    else sex=s;
+    owner_id=id;
+    name=nm;
+    birth_year=y;
+}
+
+bool Owner::addVehicle(Vehicle *veh)
+{
+    vector<Vehicle *>::iterator it;
+    for(it = my_vehicles.begin(); it != my_vehicles.end(); it++)
+    {
+        //already added
+        if((*it)->getRegistration() == veh->getRegistration()) return false;
+    }
+    my_vehicles.push_back(veh);
+    return true;
+}
+
+bool Owner::removeVehicle(Vehicle *veh)
+{
+    vector<Vehicle *>::iterator it;
+    for(it = my_vehicles.begin(); it != my_vehicles.end(); it++)
+    {
+        if((*it)->getRegistration() == veh->getRegistration())
+        {
+            it=my_vehicles.erase(it);
+            return true;
+        }
+    }
+    return false;
+}
+
+string Owner::write() const
+{
+    stringstream ss;
+    ss << "Id: "<< owner_id << ", name: " << name << ", sex: " << sex << ", birth year: " << birth_year << endl;
+    if(my_vehicles.empty()) ss << "No vehicles assigned";
+    else {
+        ss << "Vehicles assigned: " << endl;
+        vector<Vehicle *>::const_iterator it;
+        for(it=my_vehicles.begin(); it!=my_vehicles.end(); it++)
+        {
+            ss << (*it)->getRegistration() << endl;
+        }
+    }
+    ss << endl;
     return ss.str();
 }

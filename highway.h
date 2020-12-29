@@ -230,6 +230,7 @@ public:
 class  Vehicle {
     string registration;
     int type;
+    unsigned int owner_ass;
 public:
     /**
      * Vehicle constructor
@@ -246,6 +247,7 @@ public:
      * @return the amount of the fee per one kilometer for a given type of vehicle
      */
     float fee();
+    void addOwner(unsigned int id_own);
 };
 
 class Ride {
@@ -356,7 +358,19 @@ public:
     string write() const;
 };
 
-
+class Owner{
+    unsigned int owner_id;
+    string name;
+    string sex;     //"male" or "female"
+    int birth_year;
+    vector<Vehicle *> my_vehicles;
+public:
+    Owner(unsigned int id, string nm, string s, int y);
+    ~Owner(){};
+    bool addVehicle(Vehicle *veh);
+    bool removeVehicle(Vehicle *veh);
+    string write() const;
+};
 
 
 #endif //AEDA_PROJECT_HIGHWAY_H

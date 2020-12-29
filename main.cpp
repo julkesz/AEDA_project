@@ -6,6 +6,7 @@ using namespace std;
 
 int main() {
 
+    /*
     Staff s;
     Passages p;
     Traffic t;
@@ -103,7 +104,7 @@ int main() {
         s.showEmployees("free");
         cout << endl << endl << endl;
 
-
+*/
         Vehicle motorcycle1("AA 16 AA", 1);
         Vehicle motorcycle2("BE 73 WA", 1);
         Vehicle car1("34 MR 06", 2);
@@ -112,7 +113,7 @@ int main() {
         Vehicle truck2("XR 53 42", 3);
         Vehicle bus1("88 90 TH", 4);
         Vehicle bus2("13 67 WE", 4);
-
+/*
 
 
         t.enterRoad(car1, "tollA_porto", "tollB_lisbon", "green", 1, 1, 2020);
@@ -253,10 +254,23 @@ int main() {
     cout<<tech1.getPerformance()<<endl;
     cout<<tech2.getPerformance()<<endl;
 
+    */
 
     /* Julka jest super!! */
 
-
+    try {
+        cout << "OWNERS:" << endl;
+        /*Owner o(1, "Adam Brown", "m", 2003);*/
+        Owner o1(1, "Adam Brown", "male", 2003);
+        o1.addVehicle(&motorcycle1);
+        o1.addVehicle(&car1);
+        cout << o1.write();
+    }
+    catch(WrongValue<string> &e)
+    {
+        cout<<"Caught exception. ";
+        e.getInfo();
+    }
 
     return 0;
 }
