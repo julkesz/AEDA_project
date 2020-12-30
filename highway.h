@@ -16,6 +16,7 @@ using namespace std;
 class Technician;
 class Intervention;
 class Lane;
+class Owner;
 
 typedef priority_queue<Technician*> HeapTech;
 
@@ -230,14 +231,14 @@ public:
 class  Vehicle {
     string registration;
     int type;
-    unsigned int owner_ass;
+    Owner *owner;
 public:
     /**
      * Vehicle constructor
      * @param reg vehicle registration
      * @param tp vehicle type (1 or 2 or 3 or 4)
      */
-    Vehicle(string reg, int tp);
+    Vehicle(string reg, int tp, Owner *own);
     ~Vehicle(){};
     /**
      * @return registration of the vehicle
@@ -247,7 +248,7 @@ public:
      * @return the amount of the fee per one kilometer for a given type of vehicle
      */
     float fee();
-    void addOwner(unsigned int id_own);
+    Owner * getOwner();
 };
 
 class Ride {
@@ -359,16 +360,17 @@ public:
 };
 
 class Owner{
-    unsigned int owner_id;
     string name;
     string sex;     //"male" or "female"
     int birth_year;
     vector<Vehicle *> my_vehicles;
 public:
-    Owner(unsigned int id, string nm, string s, int y);
+    Owner(string nm, string s, int y);
     ~Owner(){};
+    string getName() const;
     bool addVehicle(Vehicle *veh);
     bool removeVehicle(Vehicle *veh);
+    vector<Vehicle *> getMyVehicles() const;
     string write() const;
 };
 

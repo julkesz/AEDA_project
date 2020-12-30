@@ -82,4 +82,14 @@ public:
     type(tp), toll_assoc(t), reg_day(d), reg_month(m), reg_year(y){}
 
 };
+
+
+class VehicleAlreadyRegistered{
+    string registration;
+public:
+    VehicleAlreadyRegistered(string reg): registration(reg){}
+    string getRegistration(){return registration;}
+};
+
+
 #endif //AEDA_PROJECT_EXCEPTIONS_H

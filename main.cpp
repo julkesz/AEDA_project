@@ -104,7 +104,7 @@ int main() {
         s.showEmployees("free");
         cout << endl << endl << endl;
 
-*/
+
         Vehicle motorcycle1("AA 16 AA", 1);
         Vehicle motorcycle2("BE 73 WA", 1);
         Vehicle car1("34 MR 06", 2);
@@ -113,7 +113,7 @@ int main() {
         Vehicle truck2("XR 53 42", 3);
         Vehicle bus1("88 90 TH", 4);
         Vehicle bus2("13 67 WE", 4);
-/*
+
 
 
         t.enterRoad(car1, "tollA_porto", "tollB_lisbon", "green", 1, 1, 2020);
@@ -259,12 +259,26 @@ int main() {
     /* Julka jest super!! */
 
     try {
+        Registration r;
         cout << "OWNERS:" << endl;
         /*Owner o(1, "Adam Brown", "m", 2003);*/
-        Owner o1(1, "Adam Brown", "male", 2003);
+        Owner o1("Adam Brown", "male", 2003);
+        Owner * pointer = &o1;
+        cout << o1.write() << endl;
+        Vehicle motorcycle1("AA 16 AA", 1, pointer);
+        Vehicle motorcycle2("AB 16 AA", 1, pointer);
         o1.addVehicle(&motorcycle1);
-        o1.addVehicle(&car1);
-        cout << o1.write();
+        cout << motorcycle1.getOwner()->write();
+
+        Owner o2("Ann Avonlea", "female", 1985);
+        Owner o3("Ann Beckett", "female", 1979);
+        r.addOwner(o1);
+        r.addOwner(o2);
+        r.addOwner(o3);
+        cout << r.findOwner(o1);
+        r.registerVehicle(o1, "AA 78 BB", 2);
+        r.registerVehicle(o2, "AB 22 AA", 3);
+        /*r.registerVehicle(o2, "AB 22 AA", 3);   naprawić!!*/
     }
     catch(WrongValue<string> &e)
     {

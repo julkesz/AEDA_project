@@ -221,11 +221,12 @@ unsigned int NormalLane::getIdEmp() const{
     return id_employee;
 }
 
-Vehicle::Vehicle(string reg, int tp):
+Vehicle::Vehicle(string reg, int tp, Owner *own):
     registration(reg)
 {
     if (tp!=1 && tp!=2 && tp!=3 && tp!=4) throw WrongValue(tp);
     type=tp;
+    owner = own;
 }
 
 string Vehicle::getRegistration(){
@@ -244,9 +245,9 @@ float Vehicle::fee()
     }
 }
 
-void Vehicle::addOwner(unsigned int id_own)
+Owner * Vehicle::getOwner()
 {
-    owner_ass = id_own;
+    return owner;
 }
 
 Ride::Ride(Vehicle &vh, Lane *ln, unsigned int lane_p, unsigned d, unsigned m, unsigned y) {
@@ -404,13 +405,22 @@ string Intervention::write() const
     return ss.str();
 }
 
-Owner::Owner(unsigned int id, string nm, string s, int y)
+Owner::Owner(string nm, string s, int y)
 {
     if(s!="male" && s!="female") throw WrongValue(s);
     else sex=s;
-    owner_id=id;
     name=nm;
     birth_year=y;
+}
+
+string Owner::getName() const
+{
+    return name;
+}
+
+vector<Vehicle *> Owner::getMyVehicles() const
+{
+    return my_vehicles;
 }
 
 bool Owner::addVehicle(Vehicle *veh)
@@ -442,7 +452,7 @@ bool Owner::removeVehicle(Vehicle *veh)
 string Owner::write() const
 {
     stringstream ss;
-    ss << "Id: "<< owner_id << ", name: " << name << ", sex: " << sex << ", birth year: " << birth_year << endl;
+    ss << "Name: " << name << ", sex: " << sex << ", birth year: " << birth_year << endl;
     if(my_vehicles.empty()) ss << "No vehicles assigned";
     else {
         ss << "Vehicles assigned: " << endl;

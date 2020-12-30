@@ -76,7 +76,33 @@ ostream & operator<<(ostream & os, const Staff & s){
     return os;
 }
 
+bool Registration::findOwner(Owner &own) const
+{
+    tabHOwner::const_iterator it;
+    it = owners.find(&own);
+    if(it == owners.end()) return false;
+    else return true;
+}
 
+void Registration::addOwner(Owner & own)
+{
+    if(findOwner(own) == false) owners.insert(&own);
+}
+
+void Registration::registerVehicle(Owner & own, string reg, int tp)
+{
+    Owner * pointer = &own;
+    addOwner(own);
+    vector<Vehicle *>::const_iterator it;
+    /* jakis problem ze wskaznikami
+    for(it = own.getMyVehicles().begin(); it < own.getMyVehicles().end(); it++)
+    {
+        if((*it)->getRegistration() == reg) throw VehicleAlreadyRegistered(reg);
+    }
+     */
+    Vehicle *vehpointer = new Vehicle(reg, tp, pointer);
+    own.addVehicle(vehpointer);
+}
 
 
 bool Passages::addToll(string nm, float lat_deg, string lat_dir, float long_deg, string long_dir, string dir) {
@@ -394,7 +420,6 @@ bool Works::finishIntervention(string tp, string toll_name, unsigned int r_d, un
 
 }
 
-
 void Works::print() const {
     BSTItrIn<Intervention> it(interventions);
     while (!it.isAtEnd()) {
@@ -402,3 +427,5 @@ void Works::print() const {
         it.advance();
     }
 }
+
+

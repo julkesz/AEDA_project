@@ -5,6 +5,7 @@
 #include <vector>
 #include "highway.h"
 #include "bst.h"
+#include <unordered_set>
 
 using namespace std;
 
@@ -46,6 +47,35 @@ public:
      */
     friend ostream & operator<<(ostream & os, const Staff & s);
     friend class Passages;
+};
+
+struct ownerHash
+{
+    int operator() (const Owner* own) const  //hash function (used in case of the conflict)
+    {
+        string nm = own->getName();
+        int v = 0;
+        for (unsigned int i = 0; i < nm.size(); i++) v = 37 * v + nm[i];
+        return v;
+    }
+
+    bool operator() (const Owner* own1, const Owner* own2) const   //comparing function
+    {
+        if(own1->getName() == own2->getName()) return true;
+        else return false;
+    }
+};
+
+typedef unordered_set<Owner*, ownerHash, ownerHash> tabHOwner;
+
+class Registration{
+    tabHOwner owners;
+public:
+    Registration(){};
+    bool findOwner(Owner &own) const;
+    void addOwner(Owner & own);
+    void changeOwner(Owner &oldown, Owner &newown, string reg);
+    void registerVehicle(Owner & own, string reg, int tp);  // creating a new Vehicle
 };
 
 
