@@ -84,11 +84,18 @@ public:
 };
 
 
-class VehicleAlreadyRegistered{
+class VehicleAlreadySaved{
     string registration;
 public:
-    VehicleAlreadyRegistered(string reg): registration(reg){}
+    VehicleAlreadySaved(string reg): registration(reg){}
     string getRegistration(){return registration;}
+};
+
+class OwnerDoesNotExist{
+    string name;
+public:
+    OwnerDoesNotExist(string nm): name(nm){}
+    string getName() {return name;}
 };
 
 

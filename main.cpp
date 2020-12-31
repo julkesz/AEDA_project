@@ -272,18 +272,26 @@ int main() {
 
         Owner o2("Ann Avonlea", "female", 1985);
         Owner o3("Ann Beckett", "female", 1979);
+        Owner o4("Ann B", "female", 1979);
         r.addOwner(o1);
         r.addOwner(o2);
         r.addOwner(o3);
-        cout << r.findOwner(o1);
+        r.addOwner(o3);   //nie dodaje się, więc dobrze
+        cout << r.findOwner(o1) << endl;
+        cout << r.findOwner(o4) << endl;
+
         r.registerVehicle(o1, "AA 78 BB", 2);
         r.registerVehicle(o2, "AB 22 AA", 3);
-        /*r.registerVehicle(o2, "AB 22 AA", 3);   naprawić!!*/
+        r.registerVehicle(o2, "AB 22 AA", 3);
     }
     catch(WrongValue<string> &e)
     {
         cout<<"Caught exception. ";
         e.getInfo();
+    }
+    catch(VehicleAlreadySaved &e)
+    {
+        cout<<"Caught exception. Vehicle already saved: "<<e.getRegistration()<<endl;
     }
 
     return 0;

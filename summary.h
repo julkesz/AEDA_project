@@ -72,7 +72,7 @@ class Registration{
     tabHOwner owners;
 public:
     Registration(){};
-    bool findOwner(Owner &own) const;
+    bool findOwner(Owner & own);
     void addOwner(Owner & own);
     void changeOwner(Owner &oldown, Owner &newown, string reg);
     void registerVehicle(Owner & own, string reg, int tp);  // creating a new Vehicle

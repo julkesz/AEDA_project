@@ -76,17 +76,19 @@ ostream & operator<<(ostream & os, const Staff & s){
     return os;
 }
 
-bool Registration::findOwner(Owner &own) const
+bool Registration::findOwner(Owner &own)
 {
+    Owner *pointer = &own;
     tabHOwner::const_iterator it;
-    it = owners.find(&own);
+    it = owners.find(pointer);
     if(it == owners.end()) return false;
     else return true;
 }
 
-void Registration::addOwner(Owner & own)
+void Registration::addOwner(Owner &own)
 {
-    if(findOwner(own) == false) owners.insert(&own);
+    Owner * pointer = &own;
+    if(findOwner(own) == false) owners.insert(pointer);
 }
 
 void Registration::registerVehicle(Owner & own, string reg, int tp)
@@ -94,14 +96,22 @@ void Registration::registerVehicle(Owner & own, string reg, int tp)
     Owner * pointer = &own;
     addOwner(own);
     vector<Vehicle *>::const_iterator it;
-    /* jakis problem ze wskaznikami
-    for(it = own.getMyVehicles().begin(); it < own.getMyVehicles().end(); it++)
+    vector<Vehicle *> tempvector = own.getMyVehicles();
+    for(it = tempvector.begin(); it != tempvector.end(); it++)
     {
-        if((*it)->getRegistration() == reg) throw VehicleAlreadyRegistered(reg);
+        if((*it)->getRegistration() == reg) throw VehicleAlreadySaved(reg);
     }
-     */
     Vehicle *vehpointer = new Vehicle(reg, tp, pointer);
     own.addVehicle(vehpointer);
+}
+
+void Registration::changeOwner(Owner &oldown, Owner &newown, string reg)
+{
+    if(findOwner(oldown) == false) throw OwnerDoesNotExist(oldown.getName());
+
+    //????
+
+
 }
 
 
