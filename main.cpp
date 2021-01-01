@@ -282,7 +282,16 @@ int main() {
 
         r.registerVehicle(o1, "AA 78 BB", 2);
         r.registerVehicle(o2, "AB 22 AA", 3);
-        r.registerVehicle(o2, "AB 22 AA", 3);
+        /*r.registerVehicle(o2, "AB 22 AA", 3);*/
+        /*r.changeOwner(o4, o2, "AA 78 BB");  //nie ma takiego ownera w bazie*/
+        /*r.changeOwner(o1, o2, "AA 79 BB");  //owner nie ma takiego Vehicle*/
+        r.changeOwner(o1, o2, "AA 78 BB");
+        /*r.changeOwner(o1, o2, "AA 78 BB");  //owner nie ma juz takiego Vehicle*/
+        /*r.deleteVehicle(o4, "AA 78 BB"); //nie ma takiego ownera w bazie*/
+        /*r.deleteVehicle(o1, "AA 78 BB"); //owner nie ma takiego Vehicle*/
+        r.deleteVehicle(o2, "AB 22 AA");
+        /*r.deleteVehicle(o2, "AB 22 AA"); //owner nie ma juz takiego Vehicle*/
+
     }
     catch(WrongValue<string> &e)
     {
@@ -292,6 +301,14 @@ int main() {
     catch(VehicleAlreadySaved &e)
     {
         cout<<"Caught exception. Vehicle already saved: "<<e.getRegistration()<<endl;
+    }
+    catch(OwnerDoesNotExist &e)
+    {
+        cout<<"Caught exception. Owner does not exist: "<<e.getName()<<endl;
+    }
+    catch(VehicleDoesNotExist &e)
+    {
+        cout<<"Caught exception. Vehicle does not exist: "<<e.getRegistration()<<endl;
     }
 
     return 0;

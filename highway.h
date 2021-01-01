@@ -249,6 +249,7 @@ public:
      */
     float fee();
     Owner * getOwner();
+    void changeOwner(Owner & newown);
 };
 
 class Ride {

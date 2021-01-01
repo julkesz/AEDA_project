@@ -105,13 +105,41 @@ void Registration::registerVehicle(Owner & own, string reg, int tp)
     own.addVehicle(vehpointer);
 }
 
+void Registration::deleteVehicle(Owner & own, string reg)
+{
+    if(findOwner(own) == false) throw OwnerDoesNotExist(own.getName());
+    Owner *pointer = &own;
+    Vehicle * vehpointer = NULL;
+    for(int i = 0; i != pointer->getMyVehicles().size(); i++)
+    {
+        if(pointer->getMyVehicles()[i]->getRegistration() == reg)
+        {
+            vehpointer = pointer->getMyVehicles()[i];
+            pointer->removeVehicle(vehpointer);
+            break;
+        }
+    }
+    if(vehpointer == NULL) throw VehicleDoesNotExist(reg);
+}
+
 void Registration::changeOwner(Owner &oldown, Owner &newown, string reg)
 {
     if(findOwner(oldown) == false) throw OwnerDoesNotExist(oldown.getName());
-
-    //????
-
-
+    Owner *pointer = &oldown;
+    Vehicle * vehpointer = NULL;
+    for(int i = 0; i != pointer->getMyVehicles().size(); i++)
+    {
+        if(pointer->getMyVehicles()[i]->getRegistration() == reg)
+        {
+            vehpointer = pointer->getMyVehicles()[i];
+            pointer->removeVehicle(vehpointer);
+            break;
+        }
+    }
+    if(vehpointer == NULL) throw VehicleDoesNotExist(reg);
+    addOwner(newown);
+    vehpointer->changeOwner(newown);
+    newown.addVehicle(vehpointer);
 }
 
 

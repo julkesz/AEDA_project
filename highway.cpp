@@ -250,6 +250,11 @@ Owner * Vehicle::getOwner()
     return owner;
 }
 
+void Vehicle::changeOwner(Owner & newown)
+{
+    owner = &newown;
+}
+
 Ride::Ride(Vehicle &vh, Lane *ln, unsigned int lane_p, unsigned d, unsigned m, unsigned y) {
     vehicle_assoc = &vh;
     lane_assoc= ln;
