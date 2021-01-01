@@ -77,6 +77,9 @@ public:
     void changeOwner(Owner &oldown, Owner &newown, string reg);
     void deleteVehicle(Owner & own, string reg);
     void registerVehicle(Owner & own, string reg, int tp);  // creating a new Vehicle
+    ostream & showOwners() const;
+    ostream & filterOwners(string condition) const;  //"sex"(total) or "possessions"(partial)
+    ostream & showVehicleTypeOwners(unsigned int type) const;
 };
 
 

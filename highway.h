@@ -247,6 +247,7 @@ public:
     /**
      * @return the amount of the fee per one kilometer for a given type of vehicle
      */
+    unsigned int getType();
     float fee();
     Owner * getOwner();
     void changeOwner(Owner & newown);
@@ -369,6 +370,7 @@ public:
     Owner(string nm, string s, int y);
     ~Owner(){};
     string getName() const;
+    string getSex() const;
     bool addVehicle(Vehicle *veh);
     bool removeVehicle(Vehicle *veh);
     vector<Vehicle *> getMyVehicles() const;

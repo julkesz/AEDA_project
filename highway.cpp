@@ -233,6 +233,10 @@ string Vehicle::getRegistration(){
     return registration;
 }
 
+unsigned int Vehicle::getType(){
+    return type;
+}
+
 float Vehicle::fee()
 {
     switch(type)
@@ -423,6 +427,11 @@ string Owner::getName() const
     return name;
 }
 
+string Owner::getSex() const
+{
+    return sex;
+}
+
 vector<Vehicle *> Owner::getMyVehicles() const
 {
     return my_vehicles;
@@ -458,13 +467,13 @@ string Owner::write() const
 {
     stringstream ss;
     ss << "Name: " << name << ", sex: " << sex << ", birth year: " << birth_year << endl;
-    if(my_vehicles.empty()) ss << "No vehicles assigned";
+    if(my_vehicles.empty()) ss << "No vehicles assigned" <<endl;
     else {
         ss << "Vehicles assigned: " << endl;
         vector<Vehicle *>::const_iterator it;
         for(it=my_vehicles.begin(); it!=my_vehicles.end(); it++)
         {
-            ss << (*it)->getRegistration() << endl;
+            ss << (*it)->getRegistration() << "   (type: " << (*it)->getType() <<")" << endl;
         }
     }
     ss << endl;

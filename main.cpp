@@ -260,40 +260,70 @@ int main() {
 
     try {
         Registration r;
-        cout << "OWNERS:" << endl;
-        /*Owner o(1, "Adam Brown", "m", 2003);*/
         Owner o1("Adam Brown", "male", 2003);
-        Owner * pointer = &o1;
-        cout << o1.write() << endl;
-        Vehicle motorcycle1("AA 16 AA", 1, pointer);
-        Vehicle motorcycle2("AB 16 AA", 1, pointer);
-        o1.addVehicle(&motorcycle1);
-        cout << motorcycle1.getOwner()->write();
+        Owner o2("Anne Avonlea", "female", 1985);
+        Owner o3("Michael Beckett", "male", 1979);
+        Owner o4("Patricia Limanova", "female", 1990);
+        Owner o5("Zoe Shrimp", "female", 1979);
+        cout << endl;
+        r.showOwners();
+        cout << "*****************************************" << endl;
 
-        Owner o2("Ann Avonlea", "female", 1985);
-        Owner o3("Ann Beckett", "female", 1979);
-        Owner o4("Ann B", "female", 1979);
         r.addOwner(o1);
         r.addOwner(o2);
         r.addOwner(o3);
-        r.addOwner(o3);   //nie dodaje się, więc dobrze
-        cout << r.findOwner(o1) << endl;
-        cout << r.findOwner(o4) << endl;
+        r.addOwner(o4);
+        r.showOwners();
+        cout << "----------------------" << endl;
+        r.filterOwners("sex");
+        cout << "*****************************************" << endl;
 
-        r.registerVehicle(o1, "AA 78 BB", 2);
+        //to register a vehicle: owner must be in the system
+        r.registerVehicle(o1, "AA 78 BB", 1);
+        r.registerVehicle(o1, "AA 78 CB", 2); //registrations must vary
         r.registerVehicle(o2, "AB 22 AA", 3);
-        /*r.registerVehicle(o2, "AB 22 AA", 3);*/
-        /*r.changeOwner(o4, o2, "AA 78 BB");  //nie ma takiego ownera w bazie*/
-        /*r.changeOwner(o1, o2, "AA 79 BB");  //owner nie ma takiego Vehicle*/
-        r.changeOwner(o1, o2, "AA 78 BB");
-        /*r.changeOwner(o1, o2, "AA 78 BB");  //owner nie ma juz takiego Vehicle*/
-        /*r.deleteVehicle(o4, "AA 78 BB"); //nie ma takiego ownera w bazie*/
-        /*r.deleteVehicle(o1, "AA 78 BB"); //owner nie ma takiego Vehicle*/
-        r.deleteVehicle(o2, "AB 22 AA");
-        /*r.deleteVehicle(o2, "AB 22 AA"); //owner nie ma juz takiego Vehicle*/
+        r.registerVehicle(o2, "AC 25 AA", 3);
+        r.registerVehicle(o3, "CE 15 KK", 2);
+        r.registerVehicle(o3, "DA 29 PO", 3);
+        r.registerVehicle(o3, "CE 17 KA", 4);
+        r.showOwners();
+        cout << "*****************************************" << endl;
 
+        r.registerVehicle(o4, "CE 19 KA", 2);
+        r.registerVehicle(o4, "DA 13 KA", 3);
+        cout << o4.write();
+        cout << "*****************************************" << endl;
+
+        r.changeOwner(o4, o2, "CE 19 KA");
+
+        //we can change owner for the person not registered yet in the system (auto-registration)
+        r.changeOwner(o1, o5, "AA 78 BB");
+        //o5 appears in the system
+        r.showOwners();
+        cout << "*****************************************" << endl;
+
+        r.filterOwners("possessions");
+        cout << "*****************************************" << endl;
+
+        r.deleteVehicle(o2, "CE 19 KA");
+        r.filterOwners("possessions");
+        cout << "*****************************************" << endl;
+
+        r.deleteVehicle(o3, "CE 15 KK");
+        r.filterOwners("possessions");
+        cout << "*****************************************" << endl;
+
+        r.showVehicleTypeOwners(3);
+        cout << endl;
+        r.showVehicleTypeOwners(1);
     }
+
     catch(WrongValue<string> &e)
+    {
+        cout<<"Caught exception. ";
+        e.getInfo();
+    }
+    catch(WrongValue<unsigned int> &e)
     {
         cout<<"Caught exception. ";
         e.getInfo();

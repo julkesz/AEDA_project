@@ -142,6 +142,88 @@ void Registration::changeOwner(Owner &oldown, Owner &newown, string reg)
     newown.addVehicle(vehpointer);
 }
 
+ostream & Registration::showOwners() const
+{
+    cout << "ALL OWNERS:" << endl << endl;
+    if(owners.empty())
+    {
+        cout << "No owners in database!" << endl << endl;
+        return cout;
+    }
+    tabHOwner::const_iterator it;
+    for(it = owners.begin(); it != owners.end(); it++)
+    {
+        cout << (*it)->write();
+    }
+    return cout;
+}
+
+ostream & Registration::filterOwners(string condition) const
+{
+    if(condition != "sex" && condition != "possessions") throw WrongValue(condition);
+    if(owners.empty())
+    {
+        cout << "No owners in database!" << endl << endl;
+        return cout;
+    }
+    if(condition == "sex")
+    {
+        cout << "FEMALES:" << endl << endl;
+        tabHOwner::const_iterator it;
+        for(it = owners.begin(); it != owners.end(); it++)
+        {
+            if((*it)->getSex() == "female") cout << (*it)->write();
+        }
+        cout << "MALES:" << endl << endl;
+        for(it = owners.begin(); it != owners.end(); it++)
+        {
+            if((*it)->getSex() == "male") cout << (*it)->write();
+        }
+        return cout;
+    }
+    else
+    {
+        int maxVehicles = 0;
+        tabHOwner::const_iterator it;
+        for(it = owners.begin(); it != owners.end(); it++)
+        {
+            if((*it)->getMyVehicles().size() > maxVehicles) maxVehicles = (*it)->getMyVehicles().size();
+        }
+        cout << "OWNERS OF THE LARGEST NUMBER OF VEHICLES ("<< maxVehicles <<"): " << endl << endl;
+        for(it = owners.begin(); it != owners.end(); it++)
+        {
+            if((*it)->getMyVehicles().size() == maxVehicles) cout << (*it)->write();
+        }
+        return cout;
+    }
+}
+
+ostream & Registration::showVehicleTypeOwners(unsigned int type) const
+{
+    bool flag = false;
+    if(type!= 1 && type!= 2 && type!= 3 && type!= 4) throw WrongValue(type);
+    if(owners.empty())
+    {
+        cout << "No owners in database!" << endl << endl;
+        return cout;
+    }
+    cout << "OWNERS OF THE VEHICLES OF " << type << " TYPE:" << endl << endl;
+    tabHOwner::const_iterator it;
+    for(it = owners.begin(); it != owners.end(); it++)
+    {
+        for(int i = 0; i != (*it)->getMyVehicles().size(); i++)
+        {
+            if((*it)->getMyVehicles()[i]->getType() == type)
+            {
+                cout << "-->" << (*it)->getName() << endl;
+                flag = true;
+                break;
+            }
+        }
+    }
+    if(flag == false) cout << "No owners!" << endl;
+    return cout;
+}
 
 bool Passages::addToll(string nm, float lat_deg, string lat_dir, float long_deg, string long_dir, string dir) {
     vector< Toll *> :: iterator it;
