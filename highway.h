@@ -245,11 +245,21 @@ public:
      */
     string getRegistration();
     /**
-     * @return the amount of the fee per one kilometer for a given type of vehicle
+     * @return type of the vehicle
      */
     unsigned int getType();
+    /**
+     * @return the amount of the fee per one kilometer for a given type of vehicle
+     */
     float fee();
+    /**
+     * @return pointer to the owner of the vehicle
+     */
     Owner * getOwner();
+    /**
+     * assigns a new owner to the vehicle
+     * @param newown reference to the Owner data type object
+     */
     void changeOwner(Owner & newown);
 };
 
@@ -363,17 +373,45 @@ public:
 
 class Owner{
     string name;
-    string sex;     //"male" or "female"
+    string sex;
     int birth_year;
     vector<Vehicle *> my_vehicles;
 public:
+    /**
+    * Owner constructor, creates an Owner without assigned vehicles
+    * @param nm a name of the owner
+    * @param s sex of the owner ("male" or "female")
+    * @param y year of owner's birth
+    */
     Owner(string nm, string s, int y);
     ~Owner(){};
+    /**
+     * @return name of the owner
+     */
     string getName() const;
+    /**
+     * @return sex of the owner
+     */
     string getSex() const;
-    bool addVehicle(Vehicle *veh);
-    bool removeVehicle(Vehicle *veh);
+    /**
+     * @return a vector of pointers to owner's vehicles
+     */
     vector<Vehicle *> getMyVehicles() const;
+    /**
+     * adds the vehicle pointer to the owner's my_vehicles vector
+     * @param veh pointer to the Vehicle data type object
+     * @return false, if vehicle is already assigned to the owner, true, if the process was successful
+     */
+    bool addVehicle(Vehicle *veh);
+    /**
+     * removes the vehicle pointer from the owner's my_vehicles vector
+     * @param veh pointer to the Vehicle data type object
+     * @return false, if there was no such vehicle assigned to the owner, true, if the process was successful
+     */
+    bool removeVehicle(Vehicle *veh);
+    /**
+     * @return string data type of information about the owner and his assigned vehicles
+     */
     string write() const;
 };
 

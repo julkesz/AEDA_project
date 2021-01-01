@@ -51,6 +51,11 @@ public:
 
 struct ownerHash
 {
+    /**
+     * hash function used in a case of the hashtable elements conflict
+     * @param own pointer to the Owner which will be added to hashtable
+     * @return position number of the pointer in hashtable
+     */
     int operator() (const Owner* own) const  //hash function (used in case of the conflict)
     {
         string nm = own->getName();
@@ -59,6 +64,12 @@ struct ownerHash
         return v;
     }
 
+    /**
+     * comparing function of hashtable objects
+     * @param own1 pointer to the first owner
+     * @param own2 pointer to the second owner
+     * @return true, if compared objects are identical
+     */
     bool operator() (const Owner* own1, const Owner* own2) const   //comparing function
     {
         if(own1->getName() == own2->getName()) return true;
@@ -71,14 +82,59 @@ typedef unordered_set<Owner*, ownerHash, ownerHash> tabHOwner;
 class Registration{
     tabHOwner owners;
 public:
-    Registration(){};
+    /**
+     * checks if the pointer to the owner is already in the owners hashtable
+     * @param own reference to the Owner data type object
+     * @return true, if the pointer is already in the hashtable
+     */
     bool findOwner(Owner & own);
+    /**
+     * inserts the pointer to the owner to owners hashtable (if there is no)
+     * @param own reference to the Owner data type object
+     */
     void addOwner(Owner & own);
+    /**
+     * rewrites the vehicle to the new owner
+     * adds the pointer to the new owner to the owners hashtable if he is not there; auto-registration
+     * @param oldown reference to the old owner Owner data type object
+     * @param newown refernece to the new owner Owner data type object
+     * @param reg registration of the rewritten vehicle
+     */
     void changeOwner(Owner &oldown, Owner &newown, string reg);
+    /**
+     * removes the pointer to the vehicle from the owner's my_vehicles vector
+     * @param own reference to the Owner data type object
+     * @param reg registration of the vehicle
+     */
     void deleteVehicle(Owner & own, string reg);
+    /**
+     * registers a new vehicle to the owner, adds an owner to the owners hashtable if he is not there
+     * @param own reference to the Owner data type object
+     * @param reg registration of the new vehicle
+     * @param tp type of the new vehicle
+     */
     void registerVehicle(Owner & own, string reg, int tp);  // creating a new Vehicle
+    /**
+     * shows occupied or unoccupied (according to the given value) employees in ascending order
+     * @param status chosen status of employees ("occupied" or "free")
+     * @return ostream data type of the employees (with given status) record
+     */
+    /**
+     * shows all owners in the owners hashtable
+     * @return ostream data type of the owners (with their assigned vehicles) record
+     */
     ostream & showOwners() const;
-    ostream & filterOwners(string condition) const;  //"sex"(total) or "possessions"(partial)
+    /**
+     * lists all the owners by gender or shows a partial listing of owners with the largest amount of registered vehicles (according to the given condition)
+     * @param condition chosen condition of listing ("sex" or "possessions")
+     * @return ostream data type of the owners (according to given condition) record
+     */
+    ostream & filterOwners(string condition) const;
+    /**
+     * shows the partial listing of owners, who has at least one vehicle of the given type
+     * @param type chosen type of vehicle (1 or 2 or 3 or 4)
+     * @return ostream data type of the owners (having at least one vehicle of given type) record
+     */
     ostream & showVehicleTypeOwners(unsigned int type) const;
 };
 
