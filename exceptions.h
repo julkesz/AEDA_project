@@ -91,6 +91,13 @@ public:
     string getRegistration(){return registration;}
 };
 
+class VehicleWithoutOwner{
+    string registration;
+public:
+    VehicleWithoutOwner(string reg): registration(reg){}
+    string getRegistration(){return registration;}
+};
+
 class OwnerDoesNotExist{
     string name;
 public:

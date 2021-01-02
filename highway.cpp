@@ -221,12 +221,12 @@ unsigned int NormalLane::getIdEmp() const{
     return id_employee;
 }
 
-Vehicle::Vehicle(string reg, int tp, Owner *own):
+Vehicle::Vehicle(string reg, int tp):
     registration(reg)
 {
     if (tp!=1 && tp!=2 && tp!=3 && tp!=4) throw WrongValue(tp);
     type=tp;
-    owner = own;
+    owner = NULL;
 }
 
 string Vehicle::getRegistration(){
@@ -254,12 +254,22 @@ Owner * Vehicle::getOwner()
     return owner;
 }
 
+void Vehicle::addOwner(Owner *own)
+{
+    owner = own;
+}
+
 void Vehicle::changeOwner(Owner & newown)
 {
     owner = &newown;
 }
 
-Ride::Ride(Vehicle &vh, Lane *ln, unsigned int lane_p, unsigned d, unsigned m, unsigned y) {
+void Vehicle::deleteOwner()
+{
+    owner = NULL;
+}
+
+Ride::Ride(Vehicle &vh, Lane *ln, unsigned int lane_p, unsigned d, unsigned m, unsigned y, string own) {
     vehicle_assoc = &vh;
     lane_assoc= ln;
     lane_pos=lane_p;
@@ -267,6 +277,7 @@ Ride::Ride(Vehicle &vh, Lane *ln, unsigned int lane_p, unsigned d, unsigned m, u
     month = m;
     year = y;
     present = true;
+    owner = own;
 }
 
 void Ride::end(){
@@ -289,7 +300,7 @@ float Ride::getCost(){
 }
 
 ostream & operator<<(ostream & os, const Ride *r){
-    os<< r->lane_assoc->getTollStart() << " --> " << r->lane_assoc->getTollEnd() << ", lane: " << r->lane_pos << " (" << r->lane_assoc->getLength() << "km), date: " << r->day << "/" << r->month<< "/" << r->year << ", vehicle: " << r->vehicle_assoc->getRegistration() << ", cost: ";
+    os<< r->lane_assoc->getTollStart() << " --> " << r->lane_assoc->getTollEnd() << ", lane: " << r->lane_pos << " (" << r->lane_assoc->getLength() << "km), date: " << r->day << "/" << r->month<< "/" << r->year << ", vehicle: " << r->vehicle_assoc->getRegistration() <<", owner: " << r->owner << ", cost: ";
     if(r->present == true) os << "...";
     else os << r->cost << " Euro";
     os << endl;

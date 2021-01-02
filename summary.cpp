@@ -91,17 +91,19 @@ void Registration::addOwner(Owner &own)
     if(findOwner(own) == false) owners.insert(pointer);
 }
 
-void Registration::registerVehicle(Owner & own, string reg, int tp)
+void Registration::registerVehicle(Owner & own, Vehicle &veh)
 {
+    if(veh.getOwner() != NULL) throw VehicleAlreadySaved(veh.getRegistration());
     Owner * pointer = &own;
     addOwner(own);
     vector<Vehicle *>::const_iterator it;
     vector<Vehicle *> tempvector = own.getMyVehicles();
     for(it = tempvector.begin(); it != tempvector.end(); it++)
     {
-        if((*it)->getRegistration() == reg) throw VehicleAlreadySaved(reg);
+        if((*it)->getRegistration() == veh.getRegistration()) throw VehicleAlreadySaved(veh.getRegistration());
     }
-    Vehicle *vehpointer = new Vehicle(reg, tp, pointer);
+    veh.addOwner(pointer);
+    Vehicle *vehpointer = &veh;
     own.addVehicle(vehpointer);
 }
 
@@ -116,6 +118,7 @@ void Registration::deleteVehicle(Owner & own, string reg)
         {
             vehpointer = pointer->getMyVehicles()[i];
             pointer->removeVehicle(vehpointer);
+            vehpointer->deleteOwner();
             break;
         }
     }
@@ -353,6 +356,7 @@ ostream & operator<<(ostream & os, const Passages & p)
 
 unsigned int Traffic::enterRoad(Vehicle &vh, string toll_s, string toll_e, string type_chosen, unsigned d, unsigned m, unsigned y){
     if(type_chosen!= "green" && type_chosen!= "normal") throw WrongValue(type_chosen);
+    if(vh.getOwner()==NULL) throw VehicleWithoutOwner(vh.getRegistration());
 
     vector< Toll *> :: const_iterator it1;
     unsigned int pos;
@@ -362,7 +366,8 @@ unsigned int Traffic::enterRoad(Vehicle &vh, string toll_s, string toll_e, strin
         if((*it1)->getName() == toll_s)
         {
             pos=(*it1)->laneMinOccupied(type_chosen, toll_e);
-            rides.push_back(new Ride(vh,(*it1)->getLanes()[pos-1], pos , d, m, y));
+            string own = vh.getOwner()->getName();
+            rides.push_back(new Ride(vh,(*it1)->getLanes()[pos-1], pos , d, m, y, own));
             (*it1)->getLanes()[pos-1]->increaseOccupation();
             return pos;
         }

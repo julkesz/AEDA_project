@@ -231,14 +231,14 @@ public:
 class  Vehicle {
     string registration;
     int type;
-    Owner *owner;
+    Owner * owner;
 public:
     /**
      * Vehicle constructor
      * @param reg vehicle registration
      * @param tp vehicle type (1 or 2 or 3 or 4)
      */
-    Vehicle(string reg, int tp, Owner *own);
+    Vehicle(string reg, int tp);
     ~Vehicle(){};
     /**
      * @return registration of the vehicle
@@ -260,12 +260,15 @@ public:
      * assigns a new owner to the vehicle
      * @param newown reference to the Owner data type object
      */
+    void addOwner(Owner *own);
     void changeOwner(Owner & newown);
+    void deleteOwner();
 };
 
 class Ride {
     Vehicle *vehicle_assoc;
     Lane *lane_assoc;
+    string owner;
     unsigned int lane_pos;
     unsigned day;
     unsigned month;
@@ -282,7 +285,7 @@ public:
      * @param m month of the ride
      * @param y year of the ride
      */
-    Ride(Vehicle &vh, Lane *ln, unsigned int lane_p, unsigned d, unsigned m, unsigned y);
+    Ride(Vehicle &vh, Lane *ln, unsigned int lane_p, unsigned d, unsigned m, unsigned y, string own);
     ~Ride(){};
     /**
      * @return pointer to the associated vehicle

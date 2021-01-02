@@ -97,28 +97,22 @@ public:
      * rewrites the vehicle to the new owner
      * adds the pointer to the new owner to the owners hashtable if he is not there; auto-registration
      * @param oldown reference to the old owner Owner data type object
-     * @param newown refernece to the new owner Owner data type object
+     * @param newown reference to the new owner Owner data type object
      * @param reg registration of the rewritten vehicle
      */
     void changeOwner(Owner &oldown, Owner &newown, string reg);
     /**
-     * removes the pointer to the vehicle from the owner's my_vehicles vector
+     * removes the vehicle-owner connection
      * @param own reference to the Owner data type object
      * @param reg registration of the vehicle
      */
     void deleteVehicle(Owner & own, string reg);
-    /**
-     * registers a new vehicle to the owner, adds an owner to the owners hashtable if he is not there
-     * @param own reference to the Owner data type object
-     * @param reg registration of the new vehicle
-     * @param tp type of the new vehicle
-     */
-    void registerVehicle(Owner & own, string reg, int tp);  // creating a new Vehicle
-    /**
-     * shows occupied or unoccupied (according to the given value) employees in ascending order
-     * @param status chosen status of employees ("occupied" or "free")
-     * @return ostream data type of the employees (with given status) record
-     */
+     /**
+      * registers a new vehicle to the owner, adds an owner to the owners hashtable if he is not there
+      * @param own reference to the Owner data type object
+      * @param veh reference to the Vehicle data type object
+      */
+    void registerVehicle(Owner & own, Vehicle & veh);  // creating a new Vehicle
     /**
      * shows all owners in the owners hashtable
      * @return ostream data type of the owners (with their assigned vehicles) record
