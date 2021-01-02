@@ -18,7 +18,7 @@ class Intervention;
 class Lane;
 class Owner;
 
-typedef priority_queue<Technician*> HeapTech;
+typedef priority_queue<Technician> HeapTech;
 
 class Employee{
     unsigned int id_number;
@@ -87,6 +87,9 @@ class Toll {
     vector<Lane *> lanes;
     HeapTech technicians;
 public:
+    /**
+    * Empty Toll constructor
+    */
     Toll(){};
     /**
      * Toll constructor
@@ -98,6 +101,9 @@ public:
      * @param dir direction type of the toll ("entrance" or "exit")
      */
     Toll(string nm, float lat_deg, string lat_dir, float long_deg, string long_dir, string dir);
+    /**
+     * Toll destructor
+     */
     ~Toll(){};
     /**
      * @return name of the toll
@@ -116,10 +122,38 @@ public:
      */
     string getDirection() const;
     /**
+    * @return priority queue of technicians assigned to the toll
+    */
+    HeapTech getTechnicians() const;
+    /**
+     * @return number of technicians assigned to the toll
+     */
+    unsigned int getNumberOfTechnicians();
+    /**
      * adds the lane to the toll
      * @param ln reference to the Lane data type object
      */
     void addLane(Lane &ln);
+    /**
+     * adds the technician to the toll's priority queue
+     * @param tech1 Technician data type object
+     */
+    void addTechnician(Technician tech1);
+    /**
+     * removes the technician from the toll's priority queue
+     * @param tech1 reference to the Technician data type object
+     */
+    void removeTechnician(Technician& tech1);
+    /**
+     * searches for a suitable technician for the intervention (with the highest performance in the required specialty)
+     * @param invt reference to the Intervention data type object
+     * @return Technician data type object
+     */
+    Technician searchTechnician(Intervention& invt);
+    /**
+     * prints list of technicians in the toll's priority queue
+     */
+    void printTechnicians();
     /**
      * finds the least occupied toll lane of given type
      * @param type chosen type of the lane ("green" or "normal")
@@ -134,13 +168,6 @@ public:
     * @return ostream data type of the toll's lanes record
     */
     friend ostream & operator<<(ostream & os, const Toll * t);
-
-    HeapTech getTechnicians() const;
-    unsigned int numberOfTechnicians();
-    unsigned addTechnician(Technician* tech1);
-    Technician* searchTechnician(Intervention& invt);
-    //unsigned fixDefect();
-
 };
 
 
@@ -332,47 +359,153 @@ public:
 
 class Technician {
     string name;
-    string specialty; //review, electronics or informatics
-    vector <Intervention> interventions;
+    string speciality;
+    unsigned int number_of_interventions;
     float time_spent;
 public:
+    /**
+     * Empty Technician constructor
+     */
     Technician(){};
+    /**
+     * Technician destructor
+     */
+    ~Technician(){};
+    /**
+     * Technician constructor
+     * @param nm name of the technician
+     * @param spt speciality of the technician ("review", "electronics" or "informatics")
+     */
     Technician(string nm, string spt);
+    /**
+     * @return name of the technician
+     */
     string getName() const;
-    string getSpecialty() const;
+    /**
+     * @return speciality of the technician
+     */
+    string getSpeciality() const;
+    /**
+     * @return performance of the technician (the average resolution time of interventions already carried out)
+     */
     float getPerformance() const;
-    void addIntervention(Intervention& intv);
+    /**
+     * increases number of carried out interventions and adds duration of the intervention to the total time spent on interventions
+     * @param dur duration of the intervention
+     */
+    void completeIntervention(unsigned int dur);
+    /**
+     * compares two technicians
+     * @param tech1 reference to the Technician data type object
+     * @return true if the second technician has shorter average time of resolving interventions than the first one
+     */
     bool operator<(const Technician& tech1) const;
-
+    /**
+     * compares two technicians
+     * @param tech1 reference to the Technician data type object
+     * @return true if the two technicians have the same names and specialities
+     */
+    bool operator ==(const Technician& tech1) const;
+    /**
+     * @return string data type of information about the technician
+     */
+    string write() const;
 };
 
+
+/**
+ * counts total number of days from 00/00/0000 to the given date
+ * @param day of the date
+ * @param month of the date
+ * @param year of the date
+ * @return number of days
+ */
 int mkdays(int day, int month, int year);
 
 class Intervention {
-    string type;  //review, electronics or informatics
-    Toll* toll_assoc; //associated toll
-    unsigned int reg_day; //registration day
-    unsigned int reg_month; //registration month
-    unsigned int reg_year; //registration year
-    unsigned int start_day; //start day
-    unsigned int start_month; //start month
-    unsigned int start_year; //start year
-    unsigned int duration; // duration in days
-    Technician* technician_resp; //responsible technician
-    string status; // "registered" "in progress" "completed"
+    string type;
+    Toll* toll_assoc;
+    unsigned int reg_day;
+    unsigned int reg_month;
+    unsigned int reg_year;
+    unsigned int start_day;
+    unsigned int start_month;
+    unsigned int start_year;
+    unsigned int duration;
+    Technician technician_resp;
+    string status; // "registered", "in progress" or "completed"
 public:
+    /**
+     * Empty Intervention constructor
+     */
     Intervention(){};
+    /**
+     * Intervention constructor
+     * @param tp type of the intervention ("review", "electronics" or "informatics")
+     * @param t pointer to the associated toll
+     * @param d day of the intervention's registration
+     * @param m month of the intervention's registration
+     * @param y year of the intervention's registration
+     */
     Intervention(string tp, Toll* t, unsigned int d, unsigned int m, unsigned int y);
+    /**
+     * Intervention destructor
+     */
     ~Intervention(){};
+    /**
+     * @return pointer to the associated toll
+     */
+    Toll* getToll() const;
+    /**
+     * @return duration of the finished intervention (in days)
+     */
     unsigned int getDuration() const;
+    /**
+     * @return type of the intervention ("review", "electronics" or "informatics")
+     */
     string getType() const;
-    Technician* getTechnician() const;
-    void start(Technician* tech, unsigned int d, unsigned int m, unsigned int y);
+    /**
+     * @return status of the intervention ("registered", "in progress" or "completed")
+     */
+    string getStatus() const;
+    /**
+     * @return technician who resolved/is resolving the intervention
+     */
+    Technician getTechnician() const;
+    /**
+     * starts the intervention
+     * @param tech reference to the Technician data type object
+     * @param d day of the start of the intervention
+     * @param m month of the start of the intervention
+     * @param y year of the start of the intervention
+     */
+    void start(Technician& tech, unsigned int d, unsigned int m, unsigned int y);
+    /**
+     * finishes the intervention
+     * @param d day of the end of the intervention
+     * @param m month of the end of the intervention
+     * @param y year of the end of the intervention
+     */
     void finish(unsigned int d, unsigned int m, unsigned int y);
-    bool operator < (const Intervention &invt1) const;
-    bool operator ==(const Intervention &invt1) const;
+    /**
+     * compares two interventions
+     * @param invt1 reference to the Intervention data type object
+     * @return true if the first intervention was registered before the second one or its toll's name is before the toll's name of the second one or its type is before the type of the second one
+     */
+    bool operator < (const Intervention& invt1) const;
+    /**
+     * compares two interventions
+     * @param invt1 reference to the Intervention data type object
+     * @return true if the two interventions are associated with the same toll and were registered in the same day
+     */
+    bool operator ==(const Intervention& invt1) const;
+    /**
+     * @return string data type of information about the intervention
+     */
     string write() const;
 };
+
+
 
 class Owner{
     string name;

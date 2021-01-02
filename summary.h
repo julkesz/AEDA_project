@@ -178,8 +178,13 @@ public:
      * @param p reference to the Passages data type object
      * @return ostream data type of the lanes record (with their occupations)
      */
-    friend Toll* searchToll(string nm);
     friend ostream & operator<<(ostream & os, const Passages & p);
+    /**
+    * finds the toll with the given name
+    * @param nm name of the toll
+    * @return pointer to the Toll data type object
+    */
+    friend Toll* searchToll(string nm);
     friend class Traffic;
 };
 
@@ -240,14 +245,86 @@ public:
 class Works{
     BST<Intervention> interventions;
 public:
+    /**
+     * Empty Works constructor
+     */
     Works();
+    /**
+     * @return binary search tree of the interventions
+     */
     BST<Intervention> getInterventions() const;
-    void addIntervention(string tp, string toll_name, unsigned int r_d, unsigned int r_m, unsigned int r_y);
+    /**
+     * registers the intervention
+     * @param tp type of the intervention
+     * @param toll_name name of the associated toll
+     * @param r_d day of the registration
+     * @param r_m month of the registration
+     * @param r_y year of the registration
+     */
+    void registerIntervention(string tp, string toll_name, unsigned int r_d, unsigned int r_m, unsigned int r_y);
+    /**
+     * starts the intervention
+     * @param tp type of the intervention
+     * @param toll_name name of the associated toll
+     * @param r_d day of the intervention's registration
+     * @param r_m month of the intervention's registration
+     * @param r_y year of the intervention's registration
+     * @param s_d day of the start of the intervention
+     * @param s_m month of the start of the intervention
+     * @param s_y year of the start of the intervention
+     * @return true if the intervention was successfully started
+     */
     bool startIntervention(string tp, string toll_name, unsigned int r_d, unsigned int r_m, unsigned int r_y, unsigned int s_d, unsigned int s_m, unsigned int s_y);
+    /**
+     * finishes the intervention
+     * @param tp type of the intervention
+     * @param toll_name name of the associated toll
+     * @param r_d day of the intervention's registration
+     * @param r_m month of the intervention's registration
+     * @param r_y year of the intervention's registration
+     * @param f_d day of the end of the intervention
+     * @param f_m month of the end of the intervention
+     * @param f_y year of the end of the intervention
+     * @return true if the intervention was successfully finished
+     */
     bool finishIntervention(string tp, string toll_name, unsigned int r_d, unsigned int r_m, unsigned int r_y, unsigned int f_d, unsigned int f_m, unsigned int f_y);
-    bool removeIntervention();
-    //string searchFor(string word) const;
+    /**
+     * removes the intervention if no one is currently working on it
+     * @param tp type of the intervention
+     * @param toll_name name of the associated toll
+     * @param r_d day of the intervention's registration
+     * @param r_m month of the intervention's registration
+     * @param r_y year of the intervention's registration
+     * @return true if the intervention was successfully removed
+     */
+    bool removeIntervention(string tp, string toll_name, unsigned int r_d, unsigned int r_m, unsigned int r_y);
+    /**
+     * prints information about all interventions
+     */
     void print() const;
+    /**
+     * shows interventions registered between two dates
+     * @param day1 day of first date
+     * @param month1 month of first date
+     * @param year1 year of first date
+     * @param day2 day of second date
+     * @param month2 month of second date
+     * @param year2 year of second date
+     * @return ostream data type of the interventions record
+     */
+    ostream & showInterventionsBetween(unsigned int day1, unsigned int month1, unsigned int year1, unsigned int day2, unsigned int month2, unsigned int year2);
+    /**
+     * shows the interventions registered on the given toll between two dates
+     * @param day1 day of first date
+     * @param month1 month of first date
+     * @param year1 year of first date
+     * @param day2 day of second date
+     * @param month2 month of second date
+     * @param year2 year of second date
+     * @param toll_name name of the associated toll
+     * @return ostream data type of the interventions record
+     */
+    ostream & showInterventionsBetween(unsigned int day1, unsigned int month1, unsigned int year1, unsigned int day2, unsigned int month2, unsigned int year2, string toll_name);
 };
 
 

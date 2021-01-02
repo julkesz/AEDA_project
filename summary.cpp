@@ -486,7 +486,7 @@ BST<Intervention> Works::getInterventions() const{
     return interventions;
 }
 
-void Works::addIntervention(string tp, string toll_name, unsigned int r_d, unsigned int r_m, unsigned int r_y){
+void Works::registerIntervention(string tp, string toll_name, unsigned int r_d, unsigned int r_m, unsigned int r_y){
     Toll* toll1 = searchToll(toll_name);
     Intervention intv1(tp, toll1, r_d, r_m, r_y);
     interventions.insert(intv1);
@@ -505,16 +505,20 @@ bool Works::startIntervention(string tp, string toll_name, unsigned int r_d, uns
         throw InterventionDoesNotExist(tp, toll1, r_d, r_m, r_y);
     }
     else {
-        Technician* tech1 = toll1->searchTechnician(intv);
+        Technician tech1 = toll1->searchTechnician(intv);
 
-        if(tech1->getName() != "")
+        if(tech1.getName() != "")
         {
             interventions.remove(Intervention(tp, toll1, r_d, r_m, r_y));
             intv.start(tech1, s_d, s_m, s_y);
             interventions.insert(intv);
             return true;
 
-        } else return false;
+        } else
+        {
+            cout<<"Intervation: "<< intv.write() << " cannot be started. Suitable technician not found"<<endl;
+            return false;
+        }
 
     }
 }
@@ -533,24 +537,77 @@ bool Works::finishIntervention(string tp, string toll_name, unsigned int r_d, un
         throw InterventionDoesNotExist(tp, toll1, r_d, r_m, r_y);
     }
     else {
-        cout<<"after else"<<endl;
         interventions.remove(Intervention(tp, toll1, r_d, r_m, r_y));
         intv.finish(f_d, f_m, f_y);
-        Technician *tech1 = intv.getTechnician();
-        tech1->addIntervention(intv);
-        toll1->addTechnician(tech1);
+        toll1->addTechnician(intv.getTechnician());
         interventions.insert(intv);
         return true;
     }
 
 }
 
+bool Works::removeIntervention(string tp, string toll_name, unsigned int r_d, unsigned int r_m, unsigned int r_y){
+    Toll* toll1 = searchToll(toll_name);
+    Toll t_e = Toll();
+    Toll* toll_empty = &t_e;
+
+    Intervention intv = interventions.find(Intervention(tp, toll1, r_d, r_m, r_y));
+    Intervention intvNotFound("", toll_empty, 0, 0, 0);
+
+    if (intv==intvNotFound) {
+        throw InterventionDoesNotExist(tp, toll1, r_d, r_m, r_y);
+    }
+    else {
+        if (intv.getStatus()== "in progress") throw InterventionInProgress(tp, toll1, r_d, r_m, r_y);
+        interventions.remove(Intervention(tp, toll1, r_d, r_m, r_y));
+        return true;
+    }
+}
+
 void Works::print() const {
     BSTItrIn<Intervention> it(interventions);
+    cout<<"INTERVENTIONS: "<<endl;
     while (!it.isAtEnd()) {
         cout << it.retrieve().write() << endl;
         it.advance();
     }
 }
 
+
+ostream & Works::showInterventionsBetween(unsigned int day1, unsigned int month1, unsigned int year1, unsigned int day2, unsigned int month2, unsigned int year2){
+    BSTItrIn<Intervention> it(interventions);
+    Toll t_e = Toll();
+    Toll* toll_empty = &t_e;
+    Intervention intv1("",toll_empty, day1, month1, year1);
+    Intervention intv2("",toll_empty, day2, month2, year2);
+
+    while (!it.isAtEnd() && it.retrieve()<intv1) {
+        it.advance();
+    }
+
+    while (!it.isAtEnd() && it.retrieve()<intv2) {
+        cout<<it.retrieve().write()<<endl;
+        it.advance();
+    }
+    return cout;
+}
+
+
+ostream & Works::showInterventionsBetween(unsigned int day1, unsigned int month1, unsigned int year1, unsigned int day2, unsigned int month2, unsigned int year2, string toll_name){
+    BSTItrIn<Intervention> it(interventions);
+    Toll t_e = Toll();
+    Toll* toll_empty = &t_e;
+    Intervention intv1("",toll_empty, day1, month1, year1);
+    Intervention intv2("",toll_empty, day2, month2, year2);
+
+    while (!it.isAtEnd() && it.retrieve()<intv1) {
+        it.advance();
+    }
+
+    while (!it.isAtEnd() && it.retrieve()<intv2) {
+        if(it.retrieve().getToll()->getName() == toll_name) cout<<it.retrieve().write()<<endl;
+        it.advance();
+    }
+    return cout;
+}
 

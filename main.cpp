@@ -11,8 +11,6 @@ int main() {
     Passages p;
     Traffic t;
 
-
-
     try {
         s.addEmployee(1, "Simon Brown", 1987);
         s.addEmployee(2, "Martin Zelent", 1974);
@@ -206,58 +204,9 @@ int main() {
     {
         cout<<"Caught Exception. Vehicle does not exist: "<<e.getRegistration()<<endl;
     }
-/*
+*/
 
     //SECOND PART
-
-    Works w;
-
-
-    Technician tech1("Militsa Roswitha", "review");
-    Technician tech2("Astraia Magda", "review");
-    Technician tech3("Lars Bebinn", "electronics");
-    Technician tech4("Vasko Anica", "electronics");
-    Technician tech5("Kama Yisrael", "informatics");
-
-    Technician* pointer_tech1 = &tech1;
-    Technician* pointer_tech2 = &tech2;
-    Technician* pointer_tech3 = &tech3;
-    Technician* pointer_tech4 = &tech4;
-    Technician* pointer_tech5 = &tech5;
-
-    searchToll("tollA_porto")->addTechnician(pointer_tech1);
-    searchToll("tollA_porto")->addTechnician(pointer_tech2);
-    searchToll("tollA_porto")->addTechnician(pointer_tech3);
-    searchToll("tollA_coimbra")->addTechnician(pointer_tech4);
-    searchToll("tollA_coimbra")->addTechnician(pointer_tech5);
-
-
-    cout<<endl<<endl;
-    cout<<searchToll("tollA_porto")->numberOfTechnicians()<<endl;
-    cout<<searchToll("tollA_coimbra")->numberOfTechnicians()<<endl;
-
-    w.addIntervention("review","tollA_porto", 5, 3, 2020);
-    w.addIntervention("review","tollA_porto", 2, 1, 2018);
-    w.addIntervention("informatics","tollA_porto", 5, 3, 2020);
-    w.addIntervention("review","tollA_coimbra", 5, 3, 2019);
-
-    w.print();
-    cout<<endl<<endl;
-
-    w.startIntervention("review", "tollA_porto", 5, 3, 2020, 7,3,2020);
-    w.startIntervention("review", "tollA_porto", 2, 1, 2018, 7,3,2020);
-    w.finishIntervention("review", "tollA_porto", 5, 3, 2020, 12,3,2020);
-    w.finishIntervention("review", "tollA_porto", 2, 1, 2018, 12,4,2020);
-    w.print();
-
-    cout<<endl<<endl;
-    cout<<tech1.getPerformance()<<endl;
-    cout<<tech2.getPerformance()<<endl;
-
-    */
-
-    /* Julka jest super!! */
-
 
     try {
 
@@ -265,6 +214,7 @@ int main() {
         Passages p;
         Traffic t;
         Registration r;
+        Works w;
 
         s.addEmployee(1, "Simon Brown", 1987);
         s.addEmployee(2, "Martin Zelent", 1974);
@@ -385,14 +335,14 @@ int main() {
         cout << "*****************************************" << endl;
 
         cout << "CHANGING OWNER FOR THE PERSON WHO IS NOT YET IN THE RECORD:" << endl;
-        cout << "Adam Brown ----> Zoe Shrimp"  << endl << endl;
+        cout << "Adam Brown ----> Zoe Shrimp" << endl << endl;
         //we can change owner for the person not registered yet in the system (auto-registration)
         r.changeOwner(o1, o5, "AA 78 BB");
         //o5 appears in the system
         r.showOwners();
         cout << "*****************************************" << endl;
 
-        cout << "ENTERING THE HIGHWAY (TWO DIFFERENT OWNERS):" <<endl;
+        cout << "ENTERING THE HIGHWAY (TWO DIFFERENT OWNERS):" << endl;
         t.enterRoad(car1, "tollA_porto", "tollB_lisbon", "green", 1, 1, 2020);
         t.exitRoad(car1);
         t.enterRoad(car1, "tollA_porto", "tollB_coimbra", "normal", 3, 1, 2020);
@@ -403,14 +353,15 @@ int main() {
         cout << endl << endl;
         cout << "*****************************************" << endl;
 
-        cout << "DELETING THE VEHICLE FROM THE OWNER:" <<endl << endl;
+        cout << "DELETING THE VEHICLE FROM THE OWNER:" << endl << endl;
         t.enterRoad(car3, "tollA_porto", "tollB_lisbon", "normal", 1, 1, 2020);
         t.exitRoad(car3);
         t.enterRoad(car3, "tollA_porto", "tollB_coimbra", "normal", 18, 11, 2020);
         t.exitRoad(car3);
         r.deleteVehicle(o2, "CE 19 KA");
 
-        cout << "CAR: " << car3.getRegistration() << ", " << car3.getType() << ", owner:" << car3.getOwner() << endl << endl;
+        cout << "CAR: " << car3.getRegistration() << ", " << car3.getType() << ", owner:" << car3.getOwner() << endl
+             << endl;
         cout << "OWNER: " << endl << o2.write();
         cout << "RIDES IN THE DATABASE: " << endl;
         t.showRides("CE 19 KA");
@@ -427,28 +378,125 @@ int main() {
         r.showVehicleTypeOwners(3);
         cout << endl;
         r.showVehicleTypeOwners(1);
-        }
 
-        catch (WrongValue<string> &e) {
-            cout << "Caught exception. ";
-            e.getInfo();
-        }
-        catch (WrongValue<unsigned int> &e) {
-            cout << "Caught exception. ";
-            e.getInfo();
-        }
-        catch (VehicleAlreadySaved &e) {
-            cout << "Caught exception. Vehicle already saved: " << e.getRegistration() << endl;
-        }
-        catch (OwnerDoesNotExist &e) {
-            cout << "Caught exception. Owner does not exist: " << e.getName() << endl;
-        }
-        catch (VehicleDoesNotExist &e) {
-            cout << "Caught exception. Vehicle does not exist: " << e.getRegistration() << endl;
-        }
-        catch (VehicleWithoutOwner &e) {
-            cout << "Caught exception. Vehicle without owner: " << e.getRegistration() << endl;
-        }
 
-        return 0;
+        Technician tech1("Militsa Roswitha", "review");
+        Technician tech2("Astraia Magda", "review");
+        Technician tech3("Lars Bebinn", "electronics");
+        Technician tech4("Vasko Anica", "electronics");
+        Technician tech5("Kama Yisrael", "informatics");
+        Technician tech6("Wesley Phan", "informatics");
+        Technician tech7("Tasmin Bowden", "informatics");
+        Technician tech8("Rimsha Todd", "review");
+
+
+        searchToll("tollA_porto")->addTechnician(tech1);
+        searchToll("tollA_porto")->addTechnician(tech2);
+        searchToll("tollA_porto")->addTechnician(tech3);
+        searchToll("tollA_porto")->addTechnician(tech4);
+        searchToll("tollA_porto")->addTechnician(tech5);
+        searchToll("tollA_coimbra")->addTechnician(tech6);
+        searchToll("tollA_coimbra")->addTechnician(tech7);
+        searchToll("tollA_coimbra")->addTechnician(tech8);
+        //searchToll("tollA_coimbra")->addTechnician(tech8);
+
+        searchToll("tollA_coimbra")->removeTechnician(tech8);
+
+        cout << endl << endl;
+        searchToll("tollA_porto")->printTechnicians();
+        cout << endl << endl;
+        searchToll("tollA_coimbra")->printTechnicians();
+        cout << endl << endl;
+
+        w.registerIntervention("review", "tollA_porto", 5, 3, 2020);
+        w.startIntervention("review", "tollA_porto", 5, 3, 2020, 7, 3, 2020);
+        w.finishIntervention("review", "tollA_porto", 5, 3, 2020, 12, 3, 2020);
+
+        w.registerIntervention("review", "tollA_porto", 20, 3, 2020);
+        w.startIntervention("review", "tollA_porto", 20, 3, 2020, 25, 3, 2020);
+        w.finishIntervention("review", "tollA_porto", 20, 3, 2020, 27, 3, 2020);
+
+        w.registerIntervention("informatics", "tollA_porto", 28, 3, 2020);
+        w.startIntervention("informatics", "tollA_porto", 28, 3, 2020, 20, 3, 2020);
+        w.finishIntervention("informatics", "tollA_porto", 28, 3, 2020, 15, 4, 2020);
+
+        w.registerIntervention("informatics", "tollA_coimbra", 3, 3, 2020);
+        w.startIntervention("informatics", "tollA_coimbra", 3, 3, 2020, 15, 3, 2020);
+        w.finishIntervention("informatics", "tollA_coimbra", 3, 3, 2020, 20, 3, 2020);
+
+        w.registerIntervention("informatics", "tollA_coimbra", 20, 3, 2020);
+        w.startIntervention("informatics", "tollA_coimbra", 20, 3, 2020, 20, 3, 2020);
+        w.finishIntervention("informatics", "tollA_coimbra", 20, 3, 2020, 22, 3, 2020);
+
+        w.print();
+        cout << endl << endl;
+
+        searchToll("tollA_porto")->printTechnicians();
+        cout << endl << endl;
+
+        w.registerIntervention("review", "tollA_porto", 1, 1, 2021);
+        w.registerIntervention("electronics", "tollA_porto", 2, 1, 2021);
+        w.registerIntervention("review", "tollA_coimbra", 3, 1, 2021);
+
+        w.startIntervention("review", "tollA_porto", 1, 1, 2021, 4, 1, 2020);
+        w.startIntervention("electronics", "tollA_porto", 2, 1, 2021, 4, 1, 2020);
+        w.startIntervention("review", "tollA_coimbra", 3, 1, 2021, 4, 1, 2020);
+
+        cout << endl;
+        searchToll("tollA_porto")->printTechnicians();
+        cout << endl << endl;
+
+        //w.removeIntervention("review", "tollA_porto", 1, 1, 2021);
+
+        cout << "INTERVENTIONS REGISTERED BETWEEN 01/03/2020 AND 01/04/2020:" << endl;
+        w.showInterventionsBetween(1, 3, 2020, 1, 4, 2020);
+        cout << endl << endl;
+
+        cout << "INTERVENTIONS REGISTERED BETWEEN 01/03/2020 AND 01/04/2020 ON THE TOLLA_PORTO: " << endl;
+        w.showInterventionsBetween(1, 3, 2020, 1, 4, 2020, "tollA_porto");
+        cout << endl << endl << endl;
+
     }
+
+    catch (WrongValue<string> &e) {
+            cout << "Caught exception. ";
+            e.getInfo();
+    }
+    catch (WrongValue<unsigned int> &e) {
+        cout << "Caught exception. ";
+        e.getInfo();
+    }
+    catch (VehicleAlreadySaved &e) {
+        cout << "Caught exception. Vehicle already saved: " << e.getRegistration() << endl;
+    }
+    catch (OwnerDoesNotExist &e) {
+        cout << "Caught exception. Owner does not exist: " << e.getName() << endl;
+    }
+    catch (VehicleDoesNotExist &e) {
+        cout << "Caught exception. Vehicle does not exist: " << e.getRegistration() << endl;
+    }
+    catch (VehicleWithoutOwner &e) {
+        cout << "Caught exception. Vehicle without owner: " << e.getRegistration() << endl;
+    }
+
+    catch(TechnicianDoesNotExist &e)
+    {
+        cout<<"Caught Exception. Technician does not exist in this priority queue: "<<e.getName()<<",speciality: "<<e.getSpeciality()<<endl;
+    }
+
+    catch(TechnicianAlreadyExists &e)
+    {
+        cout<<"Caught Exception. Technician already exists in this priority queue: "<<e.getName()<<", speciality: "<<e.getSpeciality()<<endl;
+    }
+
+    catch(InterventionDoesNotExist &e)
+    {
+        cout<<"Caught Exception. Intervention does not exist: "<<e.write()<<endl;
+    }
+
+    catch(InterventionInProgress &e)
+    {
+        cout<<"Caught Exception. Intervention in progress: "<<e.write()<<endl;
+    }
+    return 0;
+}

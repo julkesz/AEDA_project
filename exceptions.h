@@ -71,6 +71,24 @@ public:
 };
 
 
+class TechnicianDoesNotExist{
+    string name;
+    string speciality;
+public:
+    TechnicianDoesNotExist(Technician& tech1): name(tech1.getName()), speciality(tech1.getSpeciality()){}
+    string getName() const {return name;}
+    string getSpeciality() const {return speciality;}
+};
+
+class TechnicianAlreadyExists{
+    string name;
+    string speciality;
+public:
+    TechnicianAlreadyExists(Technician& tech1): name(tech1.getName()), speciality(tech1.getSpeciality()){}
+    string getName() const {return name;}
+    string getSpeciality() const {return speciality;}
+};
+
 class InterventionDoesNotExist{
     string type;  // review, electronic or computer
     Toll* toll_assoc; //associated toll
@@ -79,7 +97,29 @@ class InterventionDoesNotExist{
     unsigned int reg_year;
 public:
     InterventionDoesNotExist(string tp, Toll* t, unsigned int d, unsigned int m,unsigned int y):
-    type(tp), toll_assoc(t), reg_day(d), reg_month(m), reg_year(y){}
+            type(tp), toll_assoc(t), reg_day(d), reg_month(m), reg_year(y){}
+
+    string write() const{
+        stringstream ss;
+        ss << toll_assoc->getName() << ", type: " << type << ", registration date: "<<reg_day<<"/"<<reg_month<<"/"<<reg_year;
+        return ss.str(); }
+
+};
+
+class InterventionInProgress{
+    string type;  // review, electronic or computer
+    Toll* toll_assoc; //associated toll
+    unsigned int reg_day;
+    unsigned int reg_month;
+    unsigned int reg_year;
+public:
+    InterventionInProgress(string tp, Toll* t, unsigned int d, unsigned int m,unsigned int y):
+            type(tp), toll_assoc(t), reg_day(d), reg_month(m), reg_year(y){}
+
+    string write() const{
+        stringstream ss;
+        ss << toll_assoc->getName() << ", type: " << type << ", registration date: "<<reg_day<<"/"<<reg_month<<"/"<<reg_year;
+        return ss.str(); }
 
 };
 

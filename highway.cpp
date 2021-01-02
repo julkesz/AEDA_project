@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "highway.h"
 #include "exceptions.h"
 
@@ -30,6 +31,7 @@ void Employee::changeStatus()
     if(this->status == false) this->status=true;
     else this->status=false;
 }
+
 string Employee::write() const
 {
     stringstream os;
@@ -119,23 +121,53 @@ HeapTech Toll::getTechnicians() const{
     return technicians;
 }
 
-unsigned int Toll:: numberOfTechnicians(){
+unsigned int Toll:: getNumberOfTechnicians(){
     return technicians.size();
 }
 
-unsigned Toll::addTechnician(Technician* tech1){
+void Toll::addTechnician(Technician tech1){
+    vector<Technician> temp;
+    bool found=false;
+    while (!technicians.empty())
+    {
+        Technician tech = technicians.top();
+        technicians.pop();
+        if (tech == tech1) found = true;
+        temp.push_back(tech);
+    }
+
+    for (unsigned i=0; i<temp.size(); i++)
+        technicians.push(temp[i]);
+
+    if (found==true) throw TechnicianAlreadyExists(tech1);
     technicians.push(tech1);
-    return technicians.size();
 }
 
-Technician* Toll::searchTechnician(Intervention& intv){
-    vector<Technician*> temp;
+void Toll::removeTechnician(Technician& tech1){
+    vector<Technician> temp;
+    bool found=false;
+    while (!technicians.empty())
+    {
+        Technician tech = technicians.top();
+        technicians.pop();
+        if (tech == tech1) found = true;
+        else temp.push_back(tech);
+    }
+
+    for (unsigned i=0; i<temp.size(); i++)
+        technicians.push(temp[i]);
+    if (found==false) throw TechnicianDoesNotExist(tech1);
+}
+
+
+Technician Toll::searchTechnician(Intervention& intv){
+    vector<Technician> temp;
 
     while (!technicians.empty())
     {
-        Technician *tech = technicians.top();
+        Technician tech = technicians.top();
         technicians.pop();
-        if (tech->getSpecialty() == intv.getType()) {
+        if (tech.getSpeciality() == intv.getType()) {
 
             for (unsigned i=0; i<temp.size(); i++)
                 technicians.push(temp[i]);
@@ -147,19 +179,26 @@ Technician* Toll::searchTechnician(Intervention& intv){
         technicians.push(temp[i]);
 
 
-    Technician* tech_empty;
-
+    Technician tech_empty;
     return tech_empty;
 
 }
-/*
-unsigned Toll::fixDefect(){
 
-}*/
+void Toll::printTechnicians(){
+    vector<Technician> temp;
+    cout<<"Technicians in priority queue of "<< name <<":"<<endl;
+    while (!technicians.empty())
+    {
+        Technician tech = technicians.top();
+        technicians.pop();
+        cout<<tech.write()<<endl;
+        temp.push_back(tech);
+    }
 
+    for (unsigned i=0; i<temp.size(); i++)
+        technicians.push(temp[i]);
 
-
-
+}
 
 
 Lane::Lane(float lng):
@@ -308,7 +347,11 @@ ostream & operator<<(ostream & os, const Ride *r){
 }
 
 
-Technician::Technician(string nm, string spt): name(nm), specialty(spt) {
+Technician::Technician(string nm, string spt){
+    if (spt != "review" && spt != "electronics" && spt != "informatics") throw WrongValue(spt);
+    name=nm;
+    speciality=spt;
+    number_of_interventions=0;
     time_spent=0;
 }
 
@@ -317,24 +360,34 @@ string Technician::getName() const{
     return name;
 }
 
-string Technician::getSpecialty() const{
-    return specialty;
+string Technician::getSpeciality() const{
+    return speciality;
 }
 
 float Technician::getPerformance() const{
-    if(interventions.empty()) return 0;
-    else return time_spent/interventions.size();
+    if(number_of_interventions==0) return 0;
+    else return time_spent/number_of_interventions;
 }
 
-void Technician::addIntervention(Intervention& intv){
-    interventions.push_back(intv);
-    time_spent += intv.getDuration();
+void Technician::completeIntervention(unsigned int dur){
+    number_of_interventions++;
+    time_spent += dur;
 }
 
 bool Technician::operator<(const Technician& tech1) const{
     return this->getPerformance() > tech1.getPerformance();
 }
 
+bool Technician::operator ==(const Technician& tech1) const{
+    return (this->getName() == tech1.getName() && this->getSpeciality() == tech1.getSpeciality());
+}
+
+
+string Technician::write() const{
+    stringstream ss;
+    ss << this->name << ", speciality: " << this->speciality << ", performance: "<< this->getPerformance()<<" days, number of interventions: "<<number_of_interventions;
+    return ss.str();
+}
 
 
 static int monthtab[12] = { 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334 };
@@ -344,10 +397,13 @@ int mkdays(int day, int month, int year)
     return year*365 + (year-1)/4 - (year-1)/100 + (year-1)/400 + monthtab[month-1] + day-1 + ((month>2 && (year%4 == 0) && (year%100 != 0 || year%400 == 0))?1:0);
 }
 
-
 Intervention:: Intervention(string tp, Toll* t, unsigned int d, unsigned int m, unsigned int y):
-    type(tp), toll_assoc(t), reg_day(d), reg_month(m), reg_year(y)
-    {duration=0; status="registered";}
+        type(tp), toll_assoc(t), reg_day(d), reg_month(m), reg_year(y)
+{duration=0; status="registered";}
+
+Toll* Intervention::getToll() const{
+    return toll_assoc;
+}
 
 
 unsigned int Intervention::getDuration() const{
@@ -358,12 +414,16 @@ string Intervention::getType() const{
     return type;
 }
 
-Technician* Intervention::getTechnician() const{
+string Intervention::getStatus() const{
+    return status;
+}
+
+Technician Intervention::getTechnician() const{
     return technician_resp;
 }
 
 
-void Intervention::start(Technician* tech, unsigned int d, unsigned int m, unsigned int y){
+void Intervention::start(Technician& tech, unsigned int d, unsigned int m, unsigned int y){
     start_day = d;
     start_month = m;
     start_year = y;
@@ -374,6 +434,7 @@ void Intervention::start(Technician* tech, unsigned int d, unsigned int m, unsig
 void Intervention::finish(unsigned int d, unsigned int m, unsigned int y){
     duration = mkdays(d, m, y) - mkdays(start_day, start_month, start_year);
     status = "completed";
+    technician_resp.completeIntervention(duration);
 }
 
 bool Intervention:: operator < (const Intervention &invt1) const{
@@ -415,15 +476,16 @@ string Intervention::write() const
     }
     else if(status== "in progress")
     {
-        ss << toll_assoc->getName() << ", type: " << type << ", registration date: "<<reg_day<<"/"<<reg_month<<"/"<<reg_year<<", technician: "<<technician_resp->getName()<<", status: in progress";
+        ss << toll_assoc->getName() << ", type: " << type << ", registration date: "<<reg_day<<"/"<<reg_month<<"/"<<reg_year<<", technician: "<<technician_resp.getName()<<", status: in progress";
     }
     else
     {
-        ss << toll_assoc->getName() << ", type: " << type << ", registration date: "<<reg_day<<"/"<<reg_month<<"/"<<reg_year<<", technician: "<<technician_resp->getName()<<", duration: "<< duration<<" days, status: completed";
+        ss << toll_assoc->getName() << ", type: " << type << ", registration date: "<<reg_day<<"/"<<reg_month<<"/"<<reg_year<<", technician: "<<technician_resp.getName()<<", duration: "<< duration<<" days, status: completed";
     }
 
     return ss.str();
 }
+
 
 Owner::Owner(string nm, string s, int y)
 {
