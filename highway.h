@@ -285,10 +285,17 @@ public:
     Owner * getOwner();
     /**
      * assigns a new owner to the vehicle
-     * @param newown reference to the Owner data type object
+     * @param newown pointer to the Owner data type object
      */
     void addOwner(Owner *own);
+    /**
+     * changes owner for the new one
+     * @param newown reference to the Owner data type object
+     */
     void changeOwner(Owner & newown);
+    /**
+     * changes owner attribute for NULL value
+     */
     void deleteOwner();
 };
 
